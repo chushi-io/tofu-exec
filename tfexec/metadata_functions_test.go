@@ -13,7 +13,7 @@ import (
 func TestMetadataFunctionsCmd(t *testing.T) {
 	td := t.TempDir()
 
-	tf, err := NewTofu(td, tfVersion(t, testutil.Latest_v1_1))
+	tf, err := NewTofu(td, tfVersion(t, testutil.Alpha_v1_9))
 	// tf, err := NewTofu(td, tfVersion(t, testutil.Latest_v1_4)) // TODO! enable after 1.4 release
 	if err != nil {
 		t.Fatal(err)

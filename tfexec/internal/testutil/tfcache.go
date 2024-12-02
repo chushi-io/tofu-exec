@@ -5,28 +5,19 @@ package testutil
 
 import (
 	"context"
+	"fmt"
 	"sync"
 	"testing"
 
-	"github.com/hashicorp/go-version"
-	"github.com/hashicorp/hc-install/build"
-	"github.com/hashicorp/hc-install/product"
-	"github.com/hashicorp/hc-install/releases"
+	"github.com/chushi-io/lf-install/build"
+	"github.com/chushi-io/lf-install/product"
 )
 
 const (
-	Latest011   = "0.11.15"
-	Latest012   = "0.12.31"
-	Latest013   = "0.13.7"
-	Latest014   = "0.14.11"
-	Latest015   = "0.15.5"
-	Latest_v1   = "1.0.11"
-	Latest_v1_1 = "1.1.9"
-	Latest_v1_5 = "1.5.3"
-	Latest_v1_6 = "1.6.0-alpha20230719"
-
-	Beta_v1_8  = "1.8.0-beta1"
-	Alpha_v1_9 = "1.9.0-alpha20240404"
+	Latest_v1_6 = "1.6.3"
+	Latest_v1_7 = "1.7.6"
+	Latest_v1_8 = "1.8.6"
+	Alpha_v1_9  = "1.9.0-alpha2"
 )
 
 const appendUserAgent = "tfexec-testutil"
@@ -52,7 +43,7 @@ func (tf *TFCache) GitRef(t *testing.T, ref string) string {
 
 	return tf.find(t, key, func(ctx context.Context) (string, error) {
 		gr := &build.GitRevision{
-			Product: product.Tofu,
+			Product: product.OpenTofu,
 			Ref:     ref,
 		}
 		gr.SetLogger(TestLogger())
@@ -67,12 +58,13 @@ func (tf *TFCache) Version(t *testing.T, v string) string {
 	key := "v:" + v
 
 	return tf.find(t, key, func(ctx context.Context) (string, error) {
-		ev := &releases.ExactVersion{
-			Product: product.Tofu,
-			Version: version.Must(version.NewVersion(v)),
+		ev := &build.GitRevision{
+			Product: product.OpenTofu,
+			Ref:     fmt.Sprintf("refs/tags/v%s", v),
+			//Version: version.Must(version.NewVersion(v)),
 		}
 		ev.SetLogger(TestLogger())
 
-		return ev.Install(ctx)
+		return ev.Build(ctx)
 	})
 }

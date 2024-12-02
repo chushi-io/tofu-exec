@@ -24,6 +24,7 @@ type destroyConfig struct {
 	state        string
 	stateOut     string
 	targets      []string
+	excludes     []string
 
 	// Vars: each var must be supplied as a single string, e.g. 'foo=bar'
 	vars     []string
@@ -56,6 +57,10 @@ func (opt *BackupOption) configureDestroy(conf *destroyConfig) {
 
 func (opt *TargetOption) configureDestroy(conf *destroyConfig) {
 	conf.targets = append(conf.targets, opt.target)
+}
+
+func (opt *ExcludeOption) configureDestroy(conf *destroyConfig) {
+	conf.excludes = append(conf.excludes, opt.exclude)
 }
 
 func (opt *LockTimeoutOption) configureDestroy(conf *destroyConfig) {
@@ -127,7 +132,10 @@ func (tf *Tofu) destroyCmd(ctx context.Context, opts ...DestroyOption) (*exec.Cm
 		o.configureDestroy(&c)
 	}
 
-	args := tf.buildDestroyArgs(c)
+	args, err := tf.buildDestroyArgs(ctx, c)
+	if err != nil {
+		return nil, err
+	}
 
 	return tf.buildDestroyCmd(ctx, c, args)
 }
@@ -139,13 +147,17 @@ func (tf *Tofu) destroyJSONCmd(ctx context.Context, opts ...DestroyOption) (*exe
 		o.configureDestroy(&c)
 	}
 
-	args := tf.buildDestroyArgs(c)
+	args, err := tf.buildDestroyArgs(ctx, c)
+	if err != nil {
+		return nil, err
+	}
+
 	args = append(args, "-json")
 
 	return tf.buildDestroyCmd(ctx, c, args)
 }
 
-func (tf *Tofu) buildDestroyArgs(c destroyConfig) []string {
+func (tf *Tofu) buildDestroyArgs(ctx context.Context, c destroyConfig) ([]string, error) {
 	args := []string{"destroy", "-no-color", "-auto-approve", "-input=false"}
 
 	// string opts: only pass if set
@@ -176,13 +188,24 @@ func (tf *Tofu) buildDestroyArgs(c destroyConfig) []string {
 			args = append(args, "-target="+ta)
 		}
 	}
+
+	if c.excludes != nil {
+		err := tf.compatible(ctx, tf1_9_0, nil)
+		if err != nil {
+			return nil, fmt.Errorf("exclude option was introduced in Tofu 1.9.0: %w", err)
+		}
+		for _, exc := range c.excludes {
+			args = append(args, "-exclude="+exc)
+		}
+	}
+
 	if c.vars != nil {
 		for _, v := range c.vars {
 			args = append(args, "-var", v)
 		}
 	}
 
-	return args
+	return args, nil
 }
 
 func (tf *Tofu) buildDestroyCmd(ctx context.Context, c destroyConfig, args []string) (*exec.Cmd, error) {

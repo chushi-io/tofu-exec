@@ -9,7 +9,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"runtime"
 	"testing"
 
 	"github.com/chushi-io/tofu-exec/tfexec/internal/testutil"
@@ -35,7 +34,7 @@ func TestMain(m *testing.M) {
 func TestSetEnv(t *testing.T) {
 	td := t.TempDir()
 
-	tf, err := NewTofu(td, tfVersion(t, testutil.Latest_v1))
+	tf, err := NewTofu(td, tfVersion(t, testutil.Alpha_v1_9))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -69,7 +68,7 @@ func TestSetEnv(t *testing.T) {
 func TestSetLog(t *testing.T) {
 	td := t.TempDir()
 
-	tf, err := NewTofu(td, tfVersion(t, testutil.Latest_v1))
+	tf, err := NewTofu(td, tfVersion(t, testutil.Alpha_v1_9))
 
 	if err != nil {
 		t.Fatalf("unexpected NewTofu error: %s", err)
@@ -83,26 +82,6 @@ func TestSetLog(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected SetEnv error: %s", err)
 	}
-
-	t.Run("case 1: SetLog <= 0.15 error", func(t *testing.T) {
-		if runtime.GOOS == "darwin" && runtime.GOARCH == "arm64" {
-			t.Skip("Tofu for darwin/arm64 is not available until v1")
-		}
-
-		td012 := t.TempDir()
-
-		tf012, err := NewTofu(td012, tfVersion(t, testutil.Latest012))
-
-		if err != nil {
-			t.Fatalf("unexpected NewTofu error: %s", err)
-		}
-
-		err = tf012.SetLog("TRACE")
-
-		if err == nil {
-			t.Fatal("expected SetLog error, got none")
-		}
-	})
 
 	t.Run("case 2: SetLog TRACE no SetLogPath", func(t *testing.T) {
 		err := tf.SetLog("TRACE")
@@ -211,7 +190,7 @@ func TestSetLog(t *testing.T) {
 func TestSetLogCore(t *testing.T) {
 	td := t.TempDir()
 
-	tf, err := NewTofu(td, tfVersion(t, testutil.Latest_v1))
+	tf, err := NewTofu(td, tfVersion(t, testutil.Alpha_v1_9))
 
 	if err != nil {
 		t.Fatalf("unexpected NewTofu error: %s", err)
@@ -225,26 +204,6 @@ func TestSetLogCore(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected SetEnv error: %s", err)
 	}
-
-	t.Run("case 1: SetLogCore <= 0.15 error", func(t *testing.T) {
-		if runtime.GOOS == "darwin" && runtime.GOARCH == "arm64" {
-			t.Skip("Tofu for darwin/arm64 is not available until v1")
-		}
-
-		td012 := t.TempDir()
-
-		tf012, err := NewTofu(td012, tfVersion(t, testutil.Latest012))
-
-		if err != nil {
-			t.Fatalf("unexpected NewTofu error: %s", err)
-		}
-
-		err = tf012.SetLogCore("TRACE")
-
-		if err == nil {
-			t.Fatal("expected SetLogCore error, got none")
-		}
-	})
 
 	t.Run("case 2: SetLogCore TRACE no SetLogPath", func(t *testing.T) {
 		err := tf.SetLogCore("TRACE")
@@ -353,7 +312,7 @@ func TestSetLogCore(t *testing.T) {
 func TestSetLogPath(t *testing.T) {
 	td := t.TempDir()
 
-	tf, err := NewTofu(td, tfVersion(t, testutil.Latest_v1))
+	tf, err := NewTofu(td, tfVersion(t, testutil.Alpha_v1_9))
 
 	if err != nil {
 		t.Fatalf("unexpected NewTofu error: %s", err)
@@ -524,7 +483,7 @@ func TestSetLogPath(t *testing.T) {
 func TestSetLogProvider(t *testing.T) {
 	td := t.TempDir()
 
-	tf, err := NewTofu(td, tfVersion(t, testutil.Latest_v1))
+	tf, err := NewTofu(td, tfVersion(t, testutil.Alpha_v1_9))
 
 	if err != nil {
 		t.Fatalf("unexpected NewTofu error: %s", err)
@@ -538,26 +497,6 @@ func TestSetLogProvider(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected SetEnv error: %s", err)
 	}
-
-	t.Run("case 1: SetLogProvider <= 0.15 error", func(t *testing.T) {
-		if runtime.GOOS == "darwin" && runtime.GOARCH == "arm64" {
-			t.Skip("Tofu for darwin/arm64 is not available until v1")
-		}
-
-		td012 := t.TempDir()
-
-		tf012, err := NewTofu(td012, tfVersion(t, testutil.Latest012))
-
-		if err != nil {
-			t.Fatalf("unexpected NewTofu error: %s", err)
-		}
-
-		err = tf012.SetLogProvider("TRACE")
-
-		if err == nil {
-			t.Fatal("expected SetLogProvider error, got none")
-		}
-	})
 
 	t.Run("case 2: SetLogProvider TRACE no SetLogPath", func(t *testing.T) {
 		err := tf.SetLogProvider("TRACE")
@@ -663,91 +602,10 @@ func TestSetLogProvider(t *testing.T) {
 	})
 }
 
-func TestCheckpointDisablePropagation_v012(t *testing.T) {
-	if runtime.GOOS == "darwin" && runtime.GOARCH == "arm64" {
-		t.Skip("Tofu for darwin/arm64 is not available until v1")
-	}
-
-	td := t.TempDir()
-
-	tf, err := NewTofu(td, tfVersion(t, testutil.Latest012))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	err = os.Setenv("CHECKPOINT_DISABLE", "1")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.Unsetenv("CHECKPOINT_DISABLE")
-
-	t.Run("case 1: env var is set in environment and not overridden", func(t *testing.T) {
-
-		err = tf.SetEnv(map[string]string{
-			"FOOBAR": "1",
-		})
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		initCmd, err := tf.initCmd(context.Background())
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		assertCmd(t, []string{
-			"init",
-			"-no-color",
-			"-input=false",
-			"-lock-timeout=0s",
-			"-backend=true",
-			"-get=true",
-			"-upgrade=false",
-			"-lock=true",
-			"-get-plugins=true",
-			"-verify-plugins=true",
-		}, map[string]string{
-			"CHECKPOINT_DISABLE": "1",
-			"FOOBAR":             "1",
-		}, initCmd)
-	})
-
-	t.Run("case 2: env var is set in environment and overridden with SetEnv", func(t *testing.T) {
-		err = tf.SetEnv(map[string]string{
-			"CHECKPOINT_DISABLE": "",
-			"FOOBAR":             "2",
-		})
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		initCmd, err := tf.initCmd(context.Background())
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		assertCmd(t, []string{
-			"init",
-			"-no-color",
-			"-input=false",
-			"-lock-timeout=0s",
-			"-backend=true",
-			"-get=true",
-			"-upgrade=false",
-			"-lock=true",
-			"-get-plugins=true",
-			"-verify-plugins=true",
-		}, map[string]string{
-			"CHECKPOINT_DISABLE": "",
-			"FOOBAR":             "2",
-		}, initCmd)
-	})
-}
-
 func TestCheckpointDisablePropagation_v1(t *testing.T) {
 	td := t.TempDir()
 
-	tf, err := NewTofu(td, tfVersion(t, testutil.Latest_v1))
+	tf, err := NewTofu(td, tfVersion(t, testutil.Alpha_v1_9))
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -93,7 +93,7 @@ This patch version removes some unnecessary dependencies, and bumps Go module co
 
 # 0.16.0 (January 31, 2022)
 
-This release removes the experimental `tfinstall` package. We recommend users of `tfinstall` switch to https://github.com/hashicorp/hc-install.
+This release removes the experimental `tfinstall` package. We recommend users of `tfinstall` switch to https://github.com/chushi-io/lf-install.
 
 Please note also tofu-exec's Go version support policy, which, like Go's own release policy, commits to supporting the last two major releases. This means that currently tofu-exec requires Go 1.17 or later.
 
