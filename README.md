@@ -1,18 +1,18 @@
-[![PkgGoDev](https://pkg.go.dev/badge/github.com/hashicorp/terraform-exec)](https://pkg.go.dev/github.com/hashicorp/terraform-exec)
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/chushi-io/tofu-exec)](https://pkg.go.dev/github.com/chushi-io/tofu-exec)
 
-# terraform-exec
+# tofu-exec
 
 A Go module for constructing and running [Terraform](https://terraform.io) CLI commands. Structured return values use the data types defined in [terraform-json](https://github.com/hashicorp/terraform-json).
 
 The [Terraform Plugin Framework](https://github.com/hashicorp/terraform-plugin-framework) is the canonical Go interface (SDK) for Terraform plugins using the gRPC protocol. This library is intended for use in Go programs that make use of Terraform's other interface, the CLI. Importing this library is preferable to importing `github.com/hashicorp/terraform/command`, because the latter is not intended for use outside Terraform Core.
 
-While terraform-exec is already widely used, please note that this module is **not yet at v1.0.0**, and that therefore breaking changes may occur in minor releases.
+While tofu-exec is already widely used, please note that this module is **not yet at v1.0.0**, and that therefore breaking changes may occur in minor releases.
 
 We strictly follow [semantic versioning](https://semver.org).
 
 ## Go compatibility
 
-This library is built in Go, and uses the [support policy](https://golang.org/doc/devel/release.html#policy) of Go as its support policy. The two latest major releases of Go are supported by terraform-exec.
+This library is built in Go, and uses the [support policy](https://golang.org/doc/devel/release.html#policy) of Go as its support policy. The two latest major releases of Go are supported by tofu-exec.
 
 Currently, that means Go **1.18** or later must be used.
 
@@ -37,7 +37,7 @@ import (
 	"github.com/hashicorp/go-version"
 	"github.com/hashicorp/hc-install/product"
 	"github.com/hashicorp/hc-install/releases"
-	"github.com/hashicorp/terraform-exec/tfexec"
+	"github.com/chushi-io/tofu-exec/tfexec"
 )
 
 func main() {
@@ -73,14 +73,14 @@ func main() {
 
 ## Testing Terraform binaries
 
-The terraform-exec test suite contains end-to-end tests which run realistic workflows against a real Terraform binary using `tfexec.Terraform{}`.
+The tofu-exec test suite contains end-to-end tests which run realistic workflows against a real Terraform binary using `tfexec.Terraform{}`.
 
 To run these tests with a local Terraform binary, set the environment variable `TFEXEC_E2ETEST_TERRAFORM_PATH` to its path and run:
 ```sh
 go test -timeout=20m ./tfexec/internal/e2etest
 ```
 
-For more information on terraform-exec's test suite, please see Contributing below.
+For more information on tofu-exec's test suite, please see Contributing below.
 
 ## Contributing
 

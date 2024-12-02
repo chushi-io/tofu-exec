@@ -16,7 +16,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/hashicorp/terraform-exec/internal/version"
+	"github.com/chushi-io/tofu-exec/internal/version"
 )
 
 const (
@@ -147,7 +147,7 @@ func (tf *Terraform) buildEnv(mergeEnv map[string]string) []string {
 	ua := mergeUserAgent(
 		os.Getenv(appendUserAgentEnvVar),
 		tf.appendUserAgent,
-		fmt.Sprintf("HashiCorp-terraform-exec/%s", version.ModuleVersion()),
+		fmt.Sprintf("HashiCorp-tofu-exec/%s", version.ModuleVersion()),
 	)
 	env[appendUserAgentEnvVar] = ua
 

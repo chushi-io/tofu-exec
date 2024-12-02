@@ -11,8 +11,8 @@ import (
 
 	"github.com/hashicorp/go-version"
 
-	"github.com/hashicorp/terraform-exec/tfexec"
-	"github.com/hashicorp/terraform-exec/tfexec/internal/testutil"
+	"github.com/chushi-io/tofu-exec/tfexec"
+	"github.com/chushi-io/tofu-exec/tfexec/internal/testutil"
 )
 
 func TestRefresh(t *testing.T) {

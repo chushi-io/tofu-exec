@@ -1,4 +1,4 @@
-module github.com/hashicorp/terraform-exec
+module github.com/chushi-io/tofu-exec
 
 go 1.18
 

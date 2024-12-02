@@ -24,8 +24,8 @@ function init {
   DATE=$(date '+%B %d, %Y')
 
   if [ "$CI" = true ] ; then
-    git config --global user.email "proj-terraform-exec@hashicorp.com"
-    git config --global user.name "terraform-exec [bot]"
+    git config --global user.email "proj-tofu-exec@hashicorp.com"
+    git config --global user.name "tofu-exec [bot]"
     git config --global gpg.program scripts/release/signore-wrapper.sh
   fi
 
