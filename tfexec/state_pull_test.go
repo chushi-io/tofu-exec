@@ -11,7 +11,7 @@ import (
 )
 
 func TestStatePull(t *testing.T) {
-	tf, err := NewTofu(t.TempDir(), tfVersion(t, testutil.Latest_v1))
+	tf, err := NewTofu(t.TempDir(), tfVersion(t, testutil.Alpha_v1_9))
 	if err != nil {
 		t.Fatal(err)
 	}

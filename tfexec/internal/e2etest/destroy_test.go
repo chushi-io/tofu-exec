@@ -6,7 +6,6 @@ package e2etest
 import (
 	"context"
 	"io"
-	"regexp"
 	"testing"
 
 	"github.com/hashicorp/go-version"
@@ -34,26 +33,8 @@ func TestDestroy(t *testing.T) {
 	})
 }
 
-func TestDestroyJSON_TF014AndEarlier(t *testing.T) {
-	versions := []string{testutil.Latest011, testutil.Latest012, testutil.Latest013, testutil.Latest014}
-
-	runTestWithVersions(t, versions, "basic", func(t *testing.T, tfv *version.Version, tf *tfexec.Tofu) {
-		err := tf.Init(context.Background())
-		if err != nil {
-			t.Fatalf("error running Init in test directory: %s", err)
-		}
-
-		re := regexp.MustCompile("terraform destroy -json was added in 0.15.3")
-
-		err = tf.DestroyJSON(context.Background(), io.Discard)
-		if err != nil && !re.MatchString(err.Error()) {
-			t.Fatalf("error running Apply: %s", err)
-		}
-	})
-}
-
 func TestDestroyJSON_TF015AndLater(t *testing.T) {
-	versions := []string{testutil.Latest015, testutil.Latest_v1, testutil.Latest_v1_1}
+	versions := []string{testutil.Alpha_v1_9}
 
 	runTestWithVersions(t, versions, "basic", func(t *testing.T, tfv *version.Version, tf *tfexec.Tofu) {
 		err := tf.Init(context.Background())

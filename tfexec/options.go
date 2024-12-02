@@ -151,6 +151,14 @@ func DryRun(dryRun bool) *DryRunOption {
 	return &DryRunOption{dryRun}
 }
 
+type ExcludeOption struct {
+	exclude string
+}
+
+func Exclude(resource string) *ExcludeOption {
+	return &ExcludeOption{resource}
+}
+
 type FSMirrorOption struct {
 	fsMirror string
 }

@@ -15,6 +15,7 @@ type planConfig struct {
 	allowDeferral bool
 	destroy       bool
 	dir           string
+	excludes      []string
 	lock          bool
 	lockTimeout   string
 	out           string
@@ -56,6 +57,10 @@ func (opt *VarOption) configurePlan(conf *planConfig) {
 
 func (opt *TargetOption) configurePlan(conf *planConfig) {
 	conf.targets = append(conf.targets, opt.target)
+}
+
+func (opt *ExcludeOption) configurePlan(conf *planConfig) {
+	conf.excludes = append(conf.excludes, opt.exclude)
 }
 
 func (opt *StateOption) configurePlan(conf *planConfig) {
@@ -243,6 +248,17 @@ func (tf *Tofu) buildPlanArgs(ctx context.Context, c planConfig) ([]string, erro
 			args = append(args, "-target="+ta)
 		}
 	}
+
+	if c.excludes != nil {
+		err := tf.compatible(ctx, tf1_9_0, nil)
+		if err != nil {
+			return nil, fmt.Errorf("exclude option was introduced in Tofu 1.9.0: %w", err)
+		}
+		for _, exc := range c.excludes {
+			args = append(args, "-exclude="+exc)
+		}
+	}
+
 	if c.vars != nil {
 		for _, v := range c.vars {
 			args = append(args, "-var", v)

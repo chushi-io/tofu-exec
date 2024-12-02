@@ -9,14 +9,13 @@ import (
 	"fmt"
 	"path/filepath"
 	"runtime"
-	"strings"
 	"testing"
 
+	"github.com/chushi-io/lf-install/product"
+	"github.com/chushi-io/lf-install/releases"
 	"github.com/chushi-io/tofu-exec/tfexec/internal/testutil"
 	"github.com/google/go-cmp/cmp"
 	"github.com/hashicorp/go-version"
-	"github.com/hashicorp/hc-install/product"
-	"github.com/hashicorp/hc-install/releases"
 )
 
 func mustVersion(t *testing.T, s string) *version.Version {
@@ -217,7 +216,7 @@ func TestCompatible(t *testing.T) {
 	}
 
 	ev := &releases.ExactVersion{
-		Product: product.Tofu,
+		Product: product.OpenTofu,
 		Version: version.Must(version.NewVersion("0.12.26")),
 	}
 	ev.SetLogger(testutil.TestLogger())
@@ -231,7 +230,7 @@ func TestCompatible(t *testing.T) {
 	}
 
 	ev = &releases.ExactVersion{
-		Product: product.Tofu,
+		Product: product.OpenTofu,
 		Version: version.Must(version.NewVersion("0.13.0-beta3")),
 	}
 	ev.SetLogger(testutil.TestLogger())
@@ -290,63 +289,6 @@ func TestCompatible(t *testing.T) {
 				t.Fatal("expected version mismatch error, no error returned")
 			case !c.expected && !errors.As(err, &mismatch):
 				t.Fatal(err)
-			}
-		})
-	}
-}
-
-func TestExperimentsEnabled(t *testing.T) {
-	testCases := map[string]struct {
-		tfVersion     *version.Version
-		expectedError error
-	}{
-		"experiments-enabled-in-1.9.0-alpha20240404": {
-			tfVersion: version.Must(version.NewVersion(testutil.Alpha_v1_9)),
-		},
-		"experiments-disabled-in-1.8.0-beta1": {
-			tfVersion:     version.Must(version.NewVersion(testutil.Beta_v1_8)),
-			expectedError: errors.New("experiments are not enabled in version 1.8.0-beta1, as it's not an alpha or dev build"),
-		},
-		"experiments-disabled-in-1.5.3": {
-			tfVersion:     version.Must(version.NewVersion(testutil.Latest_v1_5)),
-			expectedError: errors.New("experiments are not enabled in version 1.5.3, as it's not an alpha or dev build"),
-		},
-	}
-	for name, testCase := range testCases {
-		name, testCase := name, testCase
-		t.Run(name, func(t *testing.T) {
-			ev := &releases.ExactVersion{
-				Product: product.Tofu,
-				Version: testCase.tfVersion,
-			}
-			ev.SetLogger(testutil.TestLogger())
-
-			ctx := context.Background()
-			t.Cleanup(func() { ev.Remove(ctx) })
-
-			tfBinPath, err := ev.Install(ctx)
-			if err != nil {
-				t.Fatal(err)
-			}
-
-			tf, err := NewTofu(filepath.Dir(tfBinPath), tfBinPath)
-			if err != nil {
-				t.Fatal(err)
-			}
-
-			err = tf.experimentsEnabled(context.Background())
-			if err != nil {
-				if testCase.expectedError == nil {
-					t.Fatalf("expected no error, got: %s", err)
-				}
-
-				if !strings.Contains(err.Error(), testCase.expectedError.Error()) {
-					t.Fatalf("expected error %q, got: %s", testCase.expectedError, err)
-				}
-			}
-
-			if err == nil && testCase.expectedError != nil {
-				t.Fatalf("got no error, expected: %s", testCase.expectedError)
 			}
 		})
 	}

@@ -13,7 +13,7 @@ import (
 func TestApplyCmd(t *testing.T) {
 	td := t.TempDir()
 
-	tf, err := NewTofu(td, tfVersion(t, testutil.Latest_v1))
+	tf, err := NewTofu(td, tfVersion(t, testutil.Alpha_v1_9))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -36,6 +36,8 @@ func TestApplyCmd(t *testing.T) {
 			Replace("google_pubsub_topic.test"),
 			Target("target1"),
 			Target("target2"),
+			Exclude("exclude1"),
+			Exclude("exclude2"),
 			Var("var1=foo"),
 			Var("var2=bar"),
 			Destroy(true),
@@ -64,6 +66,8 @@ func TestApplyCmd(t *testing.T) {
 			"-destroy",
 			"-target=target1",
 			"-target=target2",
+			"-exclude=exclude1",
+			"-exclude=exclude2",
 			"-var", "var1=foo",
 			"-var", "var2=bar",
 			"testfile",
@@ -94,7 +98,7 @@ func TestApplyCmd(t *testing.T) {
 func TestApplyJSONCmd(t *testing.T) {
 	td := t.TempDir()
 
-	tf, err := NewTofu(td, tfVersion(t, testutil.Latest_v1))
+	tf, err := NewTofu(td, tfVersion(t, testutil.Alpha_v1_9))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -117,6 +121,8 @@ func TestApplyJSONCmd(t *testing.T) {
 			Replace("google_pubsub_topic.test"),
 			Target("target1"),
 			Target("target2"),
+			Exclude("exclude1"),
+			Exclude("exclude2"),
 			Var("var1=foo"),
 			Var("var2=bar"),
 			DirOrPlan("testfile"),
@@ -143,6 +149,8 @@ func TestApplyJSONCmd(t *testing.T) {
 			"-replace=google_pubsub_topic.test",
 			"-target=target1",
 			"-target=target2",
+			"-exclude=exclude1",
+			"-exclude=exclude2",
 			"-var", "var1=foo",
 			"-var", "var2=bar",
 			"-json",

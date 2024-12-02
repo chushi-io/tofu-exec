@@ -35,14 +35,14 @@ import (
 	"log"
 
 	"github.com/hashicorp/go-version"
-	"github.com/hashicorp/hc-install/product"
-	"github.com/hashicorp/hc-install/releases"
+	"github.com/chushi-io/lf-install/product"
+	"github.com/chushi-io/lf-install/releases"
 	"github.com/chushi-io/tofu-exec/tfexec"
 )
 
 func main() {
 	installer := &releases.ExactVersion{
-		Product: product.Tofu,
+		Product: product.OpenTofu,
 		Version: version.Must(version.NewVersion("1.0.6")),
 	}
 

@@ -13,7 +13,7 @@ import (
 func TestPlanCmd(t *testing.T) {
 	td := t.TempDir()
 
-	tf, err := NewTofu(td, tfVersion(t, testutil.Latest_v1))
+	tf, err := NewTofu(td, tfVersion(t, testutil.Alpha_v1_9))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -52,6 +52,8 @@ func TestPlanCmd(t *testing.T) {
 			State("marvin"),
 			Target("zaphod"),
 			Target("beeblebrox"),
+			Exclude("exclude1"),
+			Exclude("exclude2"),
 			Var("android=paranoid"),
 			Var("brain_size=planet"),
 			VarFile("trillian"),
@@ -77,6 +79,8 @@ func TestPlanCmd(t *testing.T) {
 			"-destroy",
 			"-target=zaphod",
 			"-target=beeblebrox",
+			"-exclude=exclude1",
+			"-exclude=exclude2",
 			"-var", "android=paranoid",
 			"-var", "brain_size=planet",
 			"earth",
@@ -106,7 +110,7 @@ func TestPlanCmd(t *testing.T) {
 func TestPlanJSONCmd(t *testing.T) {
 	td := t.TempDir()
 
-	tf, err := NewTofu(td, tfVersion(t, testutil.Latest_v1))
+	tf, err := NewTofu(td, tfVersion(t, testutil.Alpha_v1_9))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -146,6 +150,8 @@ func TestPlanJSONCmd(t *testing.T) {
 			State("marvin"),
 			Target("zaphod"),
 			Target("beeblebrox"),
+			Exclude("exclude1"),
+			Exclude("exclude2"),
 			Var("android=paranoid"),
 			Var("brain_size=planet"),
 			VarFile("trillian"),
@@ -171,6 +177,8 @@ func TestPlanJSONCmd(t *testing.T) {
 			"-destroy",
 			"-target=zaphod",
 			"-target=beeblebrox",
+			"-exclude=exclude1",
+			"-exclude=exclude2",
 			"-var", "android=paranoid",
 			"-var", "brain_size=planet",
 			"-json",

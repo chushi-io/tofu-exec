@@ -28,6 +28,7 @@ type applyConfig struct {
 	state        string
 	stateOut     string
 	targets      []string
+	excludes     []string
 
 	// Vars: each var must be supplied as a single string, e.g. 'foo=bar'
 	vars     []string
@@ -56,6 +57,10 @@ func (opt *BackupOption) configureApply(conf *applyConfig) {
 
 func (opt *TargetOption) configureApply(conf *applyConfig) {
 	conf.targets = append(conf.targets, opt.target)
+}
+
+func (opt *ExcludeOption) configureApply(conf *applyConfig) {
+	conf.excludes = append(conf.excludes, opt.exclude)
 }
 
 func (opt *LockTimeoutOption) configureApply(conf *applyConfig) {
@@ -229,6 +234,16 @@ func (tf *Tofu) buildApplyArgs(ctx context.Context, c applyConfig) ([]string, er
 	if c.targets != nil {
 		for _, ta := range c.targets {
 			args = append(args, "-target="+ta)
+		}
+	}
+
+	if c.excludes != nil {
+		err := tf.compatible(ctx, tf1_9_0, nil)
+		if err != nil {
+			return nil, fmt.Errorf("exclude option was introduced in Tofu 1.9.0: %w", err)
+		}
+		for _, exc := range c.excludes {
+			args = append(args, "-exclude="+exc)
 		}
 	}
 	if c.vars != nil {

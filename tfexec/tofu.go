@@ -85,7 +85,7 @@ func NewTofu(workingDir string, execPath string) (*Tofu, error) {
 	}
 
 	if execPath == "" {
-		err := fmt.Errorf("NewTofu: please supply the path to a Tofu executable using execPath, e.g. using the github.com/hashicorp/hc-install module.")
+		err := fmt.Errorf("NewTofu: please supply the path to a Tofu executable using execPath, e.g. using the github.com/chushi-io/lf-install module.")
 		return nil, &ErrNoSuitableBinary{
 			err: err,
 		}
