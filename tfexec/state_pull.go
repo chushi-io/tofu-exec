@@ -23,7 +23,7 @@ func (opt *ReattachOption) configureStatePull(conf *statePullConfig) {
 	conf.reattachInfo = opt.info
 }
 
-func (tf *Terraform) StatePull(ctx context.Context, opts ...StatePullOption) (string, error) {
+func (tf *Tofu) StatePull(ctx context.Context, opts ...StatePullOption) (string, error) {
 	c := defaultStatePullConfig
 
 	for _, o := range opts {
@@ -43,7 +43,7 @@ func (tf *Terraform) StatePull(ctx context.Context, opts ...StatePullOption) (st
 
 	var ret bytes.Buffer
 	cmd.Stdout = &ret
-	err := tf.runTerraformCmd(ctx, cmd)
+	err := tf.runTofuCmd(ctx, cmd)
 	if err != nil {
 		return "", err
 	}
@@ -51,8 +51,8 @@ func (tf *Terraform) StatePull(ctx context.Context, opts ...StatePullOption) (st
 	return ret.String(), nil
 }
 
-func (tf *Terraform) statePullCmd(ctx context.Context, mergeEnv map[string]string) *exec.Cmd {
+func (tf *Tofu) statePullCmd(ctx context.Context, mergeEnv map[string]string) *exec.Cmd {
 	args := []string{"state", "pull"}
 
-	return tf.buildTerraformCmd(ctx, mergeEnv, args...)
+	return tf.buildTofuCmd(ctx, mergeEnv, args...)
 }

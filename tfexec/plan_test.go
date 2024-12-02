@@ -13,7 +13,7 @@ import (
 func TestPlanCmd(t *testing.T) {
 	td := t.TempDir()
 
-	tf, err := NewTerraform(td, tfVersion(t, testutil.Latest_v1))
+	tf, err := NewTofu(td, tfVersion(t, testutil.Latest_v1))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -106,7 +106,7 @@ func TestPlanCmd(t *testing.T) {
 func TestPlanJSONCmd(t *testing.T) {
 	td := t.TempDir()
 
-	tf, err := NewTerraform(td, tfVersion(t, testutil.Latest_v1))
+	tf, err := NewTofu(td, tfVersion(t, testutil.Latest_v1))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -182,7 +182,7 @@ func TestPlanJSONCmd(t *testing.T) {
 func TestPlanCmd_AllowDeferral(t *testing.T) {
 	td := t.TempDir()
 
-	tf, err := NewTerraform(td, tfVersion(t, testutil.Alpha_v1_9))
+	tf, err := NewTofu(td, tfVersion(t, testutil.Alpha_v1_9))
 	if err != nil {
 		t.Fatal(err)
 	}

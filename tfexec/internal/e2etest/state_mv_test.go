@@ -15,9 +15,9 @@ import (
 )
 
 func TestStateMv(t *testing.T) {
-	runTest(t, "basic_with_state", func(t *testing.T, tfv *version.Version, tf *tfexec.Terraform) {
+	runTest(t, "basic_with_state", func(t *testing.T, tfv *version.Version, tf *tfexec.Tofu) {
 		if tfv.LessThan(providerAddressMinVersion) {
-			t.Skip("state file provider FQNs not compatible with this Terraform version")
+			t.Skip("state file provider FQNs not compatible with this Tofu version")
 		}
 
 		providerName := "registry.terraform.io/hashicorp/null"
@@ -45,7 +45,7 @@ func TestStateMv(t *testing.T) {
 		// test that the new state is as expected
 		expected := &tfjson.State{
 			FormatVersion: formatVersion,
-			// TerraformVersion is ignored to facilitate latest version testing
+			// TofuVersion is ignored to facilitate latest version testing
 			Values: &tfjson.StateValues{
 				RootModule: &tfjson.StateModule{
 					Resources: []*tfjson.StateResource{{

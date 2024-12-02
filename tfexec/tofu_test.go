@@ -35,7 +35,7 @@ func TestMain(m *testing.M) {
 func TestSetEnv(t *testing.T) {
 	td := t.TempDir()
 
-	tf, err := NewTerraform(td, tfVersion(t, testutil.Latest_v1))
+	tf, err := NewTofu(td, tfVersion(t, testutil.Latest_v1))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -69,10 +69,10 @@ func TestSetEnv(t *testing.T) {
 func TestSetLog(t *testing.T) {
 	td := t.TempDir()
 
-	tf, err := NewTerraform(td, tfVersion(t, testutil.Latest_v1))
+	tf, err := NewTofu(td, tfVersion(t, testutil.Latest_v1))
 
 	if err != nil {
-		t.Fatalf("unexpected NewTerraform error: %s", err)
+		t.Fatalf("unexpected NewTofu error: %s", err)
 	}
 
 	// Required so all testing environment variables are not copied.
@@ -86,15 +86,15 @@ func TestSetLog(t *testing.T) {
 
 	t.Run("case 1: SetLog <= 0.15 error", func(t *testing.T) {
 		if runtime.GOOS == "darwin" && runtime.GOARCH == "arm64" {
-			t.Skip("Terraform for darwin/arm64 is not available until v1")
+			t.Skip("Tofu for darwin/arm64 is not available until v1")
 		}
 
 		td012 := t.TempDir()
 
-		tf012, err := NewTerraform(td012, tfVersion(t, testutil.Latest012))
+		tf012, err := NewTofu(td012, tfVersion(t, testutil.Latest012))
 
 		if err != nil {
-			t.Fatalf("unexpected NewTerraform error: %s", err)
+			t.Fatalf("unexpected NewTofu error: %s", err)
 		}
 
 		err = tf012.SetLog("TRACE")
@@ -211,10 +211,10 @@ func TestSetLog(t *testing.T) {
 func TestSetLogCore(t *testing.T) {
 	td := t.TempDir()
 
-	tf, err := NewTerraform(td, tfVersion(t, testutil.Latest_v1))
+	tf, err := NewTofu(td, tfVersion(t, testutil.Latest_v1))
 
 	if err != nil {
-		t.Fatalf("unexpected NewTerraform error: %s", err)
+		t.Fatalf("unexpected NewTofu error: %s", err)
 	}
 
 	// Required so all testing environment variables are not copied.
@@ -228,15 +228,15 @@ func TestSetLogCore(t *testing.T) {
 
 	t.Run("case 1: SetLogCore <= 0.15 error", func(t *testing.T) {
 		if runtime.GOOS == "darwin" && runtime.GOARCH == "arm64" {
-			t.Skip("Terraform for darwin/arm64 is not available until v1")
+			t.Skip("Tofu for darwin/arm64 is not available until v1")
 		}
 
 		td012 := t.TempDir()
 
-		tf012, err := NewTerraform(td012, tfVersion(t, testutil.Latest012))
+		tf012, err := NewTofu(td012, tfVersion(t, testutil.Latest012))
 
 		if err != nil {
-			t.Fatalf("unexpected NewTerraform error: %s", err)
+			t.Fatalf("unexpected NewTofu error: %s", err)
 		}
 
 		err = tf012.SetLogCore("TRACE")
@@ -353,10 +353,10 @@ func TestSetLogCore(t *testing.T) {
 func TestSetLogPath(t *testing.T) {
 	td := t.TempDir()
 
-	tf, err := NewTerraform(td, tfVersion(t, testutil.Latest_v1))
+	tf, err := NewTofu(td, tfVersion(t, testutil.Latest_v1))
 
 	if err != nil {
-		t.Fatalf("unexpected NewTerraform error: %s", err)
+		t.Fatalf("unexpected NewTofu error: %s", err)
 	}
 
 	// Required so all testing environment variables are not copied.
@@ -524,10 +524,10 @@ func TestSetLogPath(t *testing.T) {
 func TestSetLogProvider(t *testing.T) {
 	td := t.TempDir()
 
-	tf, err := NewTerraform(td, tfVersion(t, testutil.Latest_v1))
+	tf, err := NewTofu(td, tfVersion(t, testutil.Latest_v1))
 
 	if err != nil {
-		t.Fatalf("unexpected NewTerraform error: %s", err)
+		t.Fatalf("unexpected NewTofu error: %s", err)
 	}
 
 	// Required so all testing environment variables are not copied.
@@ -541,15 +541,15 @@ func TestSetLogProvider(t *testing.T) {
 
 	t.Run("case 1: SetLogProvider <= 0.15 error", func(t *testing.T) {
 		if runtime.GOOS == "darwin" && runtime.GOARCH == "arm64" {
-			t.Skip("Terraform for darwin/arm64 is not available until v1")
+			t.Skip("Tofu for darwin/arm64 is not available until v1")
 		}
 
 		td012 := t.TempDir()
 
-		tf012, err := NewTerraform(td012, tfVersion(t, testutil.Latest012))
+		tf012, err := NewTofu(td012, tfVersion(t, testutil.Latest012))
 
 		if err != nil {
-			t.Fatalf("unexpected NewTerraform error: %s", err)
+			t.Fatalf("unexpected NewTofu error: %s", err)
 		}
 
 		err = tf012.SetLogProvider("TRACE")
@@ -665,12 +665,12 @@ func TestSetLogProvider(t *testing.T) {
 
 func TestCheckpointDisablePropagation_v012(t *testing.T) {
 	if runtime.GOOS == "darwin" && runtime.GOARCH == "arm64" {
-		t.Skip("Terraform for darwin/arm64 is not available until v1")
+		t.Skip("Tofu for darwin/arm64 is not available until v1")
 	}
 
 	td := t.TempDir()
 
-	tf, err := NewTerraform(td, tfVersion(t, testutil.Latest012))
+	tf, err := NewTofu(td, tfVersion(t, testutil.Latest012))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -747,7 +747,7 @@ func TestCheckpointDisablePropagation_v012(t *testing.T) {
 func TestCheckpointDisablePropagation_v1(t *testing.T) {
 	td := t.TempDir()
 
-	tf, err := NewTerraform(td, tfVersion(t, testutil.Latest_v1))
+	tf, err := NewTofu(td, tfVersion(t, testutil.Latest_v1))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -813,14 +813,14 @@ func TestCheckpointDisablePropagation_v1(t *testing.T) {
 	})
 }
 
-// test that a suitable error is returned if NewTerraform is called without a valid
+// test that a suitable error is returned if NewTofu is called without a valid
 // executable path
-func TestNoTerraformBinary(t *testing.T) {
+func TestNoTofuBinary(t *testing.T) {
 	td := t.TempDir()
 
-	_, err := NewTerraform(td, "")
+	_, err := NewTofu(td, "")
 	if err == nil {
-		t.Fatal("expected NewTerraform to error, but it did not")
+		t.Fatal("expected NewTofu to error, but it did not")
 	}
 
 	var e *ErrNoSuitableBinary

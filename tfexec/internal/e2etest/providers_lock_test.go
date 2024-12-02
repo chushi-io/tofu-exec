@@ -17,9 +17,9 @@ var (
 )
 
 func TestProvidersLock(t *testing.T) {
-	runTest(t, "basic", func(t *testing.T, tfv *version.Version, tf *tfexec.Terraform) {
+	runTest(t, "basic", func(t *testing.T, tfv *version.Version, tf *tfexec.Tofu) {
 		if tfv.LessThan(providersLockMinVersion) {
-			t.Skip("terraform providers lock was added in Terraform 0.14, so test is not valid")
+			t.Skip("terraform providers lock was added in Tofu 0.14, so test is not valid")
 		}
 		err := tf.Init(context.Background())
 		if err != nil {

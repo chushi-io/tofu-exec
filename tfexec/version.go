@@ -36,10 +36,10 @@ var (
 	tf1_9_0  = version.Must(version.NewVersion("1.9.0"))
 )
 
-// Version returns structured output from the terraform version command including both the Terraform CLI version
+// Version returns structured output from the terraform version command including both the Tofu CLI version
 // and any initialized provider versions. This will read cached values when present unless the skipCache parameter
 // is set to true.
-func (tf *Terraform) Version(ctx context.Context, skipCache bool) (tfVersion *version.Version, providerVersions map[string]*version.Version, err error) {
+func (tf *Tofu) Version(ctx context.Context, skipCache bool) (tfVersion *version.Version, providerVersions map[string]*version.Version, err error) {
 	tf.versionLock.Lock()
 	defer tf.versionLock.Unlock()
 
@@ -53,14 +53,14 @@ func (tf *Terraform) Version(ctx context.Context, skipCache bool) (tfVersion *ve
 	return tf.execVersion, tf.provVersions, nil
 }
 
-// version does not use the locking on the Terraform instance and should probably not be used directly, prefer Version.
-func (tf *Terraform) version(ctx context.Context) (*version.Version, map[string]*version.Version, error) {
-	versionCmd := tf.buildTerraformCmd(ctx, nil, "version", "-json")
+// version does not use the locking on the Tofu instance and should probably not be used directly, prefer Version.
+func (tf *Tofu) version(ctx context.Context) (*version.Version, map[string]*version.Version, error) {
+	versionCmd := tf.buildTofuCmd(ctx, nil, "version", "-json")
 
 	var outBuf bytes.Buffer
 	versionCmd.Stdout = &outBuf
 
-	err := tf.runTerraformCmd(ctx, versionCmd)
+	err := tf.runTofuCmd(ctx, versionCmd)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -100,13 +100,13 @@ func parseJsonVersionOutput(stdout []byte) (*version.Version, map[string]*versio
 	return tfVersion, providerVersions, nil
 }
 
-func (tf *Terraform) versionFromPlaintext(ctx context.Context) (*version.Version, map[string]*version.Version, error) {
-	versionCmd := tf.buildTerraformCmd(ctx, nil, "version")
+func (tf *Tofu) versionFromPlaintext(ctx context.Context) (*version.Version, map[string]*version.Version, error) {
+	versionCmd := tf.buildTofuCmd(ctx, nil, "version")
 
 	var outBuf strings.Builder
 	versionCmd.Stdout = &outBuf
 
-	err := tf.runTerraformCmd(ctx, versionCmd)
+	err := tf.runTofuCmd(ctx, versionCmd)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -122,7 +122,7 @@ func (tf *Terraform) versionFromPlaintext(ctx context.Context) (*version.Version
 var (
 	simpleVersionRe = `v?(?P<version>[0-9]+(?:\.[0-9]+)*(?:-[A-Za-z0-9\.]+)?)`
 
-	versionOutputRe         = regexp.MustCompile(`Terraform ` + simpleVersionRe)
+	versionOutputRe         = regexp.MustCompile(`Tofu ` + simpleVersionRe)
 	providerVersionOutputRe = regexp.MustCompile(`(\n\+ provider[\. ](?P<name>\S+) ` + simpleVersionRe + `)`)
 )
 
@@ -165,7 +165,7 @@ func errorVersionString(v *version.Version) string {
 }
 
 // compatible asserts compatibility of the cached terraform version with the executable, and returns a well known error if not.
-func (tf *Terraform) compatible(ctx context.Context, minInclusive *version.Version, maxExclusive *version.Version) error {
+func (tf *Tofu) compatible(ctx context.Context, minInclusive *version.Version, maxExclusive *version.Version) error {
 	tfv, _, err := tf.Version(ctx, false)
 	if err != nil {
 		return err
@@ -182,8 +182,8 @@ func (tf *Terraform) compatible(ctx context.Context, minInclusive *version.Versi
 }
 
 // experimentsEnabled asserts the cached terraform version has experiments enabled in the executable,
-// and returns a well known error if not. Experiments are enabled in alpha and (potentially) dev builds of Terraform.
-func (tf *Terraform) experimentsEnabled(ctx context.Context) error {
+// and returns a well known error if not. Experiments are enabled in alpha and (potentially) dev builds of Tofu.
+func (tf *Tofu) experimentsEnabled(ctx context.Context) error {
 	tfv, _, err := tf.Version(ctx, false)
 	if err != nil {
 		return err
@@ -210,7 +210,7 @@ func stripPrereleaseAndMeta(v *version.Version) *version.Version {
 	return clean
 }
 
-// versionInRange checks compatibility of the Terraform version. The minimum is inclusive and the max
+// versionInRange checks compatibility of the Tofu version. The minimum is inclusive and the max
 // is exclusive, equivalent to min <= expected version < max.
 //
 // Pre-release information is ignored for comparison.

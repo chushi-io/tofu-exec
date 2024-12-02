@@ -19,7 +19,7 @@ import (
 )
 
 func TestFormatString(t *testing.T) {
-	runTest(t, "", func(t *testing.T, tfv *version.Version, tf *tfexec.Terraform) {
+	runTest(t, "", func(t *testing.T, tfv *version.Version, tf *tfexec.Tofu) {
 		unformatted := strings.TrimSpace(`
 resource     "foo"      "bar" {
 	baz = 1
@@ -48,7 +48,7 @@ resource "foo" "bar" {
 }
 
 func TestFormatCheck(t *testing.T) {
-	runTest(t, "unformatted", func(t *testing.T, tfv *version.Version, tf *tfexec.Terraform) {
+	runTest(t, "unformatted", func(t *testing.T, tfv *version.Version, tf *tfexec.Tofu) {
 		checksums := map[string]uint32{
 			"file1.tf": checkSum(t, filepath.Join(tf.WorkingDir(), "file1.tf")),
 			"file2.tf": checkSum(t, filepath.Join(tf.WorkingDir(), "file2.tf")),
@@ -76,7 +76,7 @@ func TestFormatCheck(t *testing.T) {
 }
 
 func TestFormatWrite(t *testing.T) {
-	runTest(t, "unformatted", func(t *testing.T, tfv *version.Version, tf *tfexec.Terraform) {
+	runTest(t, "unformatted", func(t *testing.T, tfv *version.Version, tf *tfexec.Tofu) {
 		err := tf.FormatWrite(context.Background())
 		if err != nil {
 			t.Fatalf("error from FormatWrite: %T %q", err, err)
@@ -92,7 +92,7 @@ func TestFormatWrite(t *testing.T) {
 }
 
 func TestFormat(t *testing.T) {
-	runTest(t, "", func(t *testing.T, tfv *version.Version, tf *tfexec.Terraform) {
+	runTest(t, "", func(t *testing.T, tfv *version.Version, tf *tfexec.Tofu) {
 		unformatted := strings.TrimSpace(`
 resource     "foo"      "bar" {
 	baz = 1
@@ -124,7 +124,7 @@ resource "foo" "bar" {
 }
 
 func TestFormat_warmFormatter(t *testing.T) {
-	runTest(t, "", func(t *testing.T, tfv *version.Version, tf *tfexec.Terraform) {
+	runTest(t, "", func(t *testing.T, tfv *version.Version, tf *tfexec.Tofu) {
 		unformatted := strings.TrimSpace(`
 resource     "foo"      "bar" {
 	baz = 1

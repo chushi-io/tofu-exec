@@ -8,13 +8,13 @@ import (
 )
 
 // AllowDeferralOption represents the -allow-deferral flag. This flag is only enabled in
-// experimental builds of Terraform. (alpha or built via source with experiments enabled)
+// experimental builds of Tofu. (alpha or built via source with experiments enabled)
 type AllowDeferralOption struct {
 	allowDeferral bool
 }
 
 // AllowDeferral represents the -allow-deferral flag. This flag is only enabled in
-// experimental builds of Terraform. (alpha or built via source with experiments enabled)
+// experimental builds of Tofu. (alpha or built via source with experiments enabled)
 func AllowDeferral(allowDeferral bool) *AllowDeferralOption {
 	return &AllowDeferralOption{allowDeferral}
 }
@@ -292,7 +292,7 @@ func Provider(providers string) *ProviderOption {
 
 type ReattachInfo map[string]ReattachConfig
 
-// ReattachConfig holds the information Terraform needs to be able to attach
+// ReattachConfig holds the information Tofu needs to be able to attach
 // itself to a provider process, so it can drive the process.
 type ReattachConfig struct {
 	Protocol        string

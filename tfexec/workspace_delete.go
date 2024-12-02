@@ -38,16 +38,16 @@ func (opt *ForceOption) configureWorkspaceDelete(conf *workspaceDeleteConfig) {
 	conf.force = opt.force
 }
 
-// WorkspaceDelete represents the workspace delete subcommand to the Terraform CLI.
-func (tf *Terraform) WorkspaceDelete(ctx context.Context, workspace string, opts ...WorkspaceDeleteCmdOption) error {
+// WorkspaceDelete represents the workspace delete subcommand to the Tofu CLI.
+func (tf *Tofu) WorkspaceDelete(ctx context.Context, workspace string, opts ...WorkspaceDeleteCmdOption) error {
 	cmd, err := tf.workspaceDeleteCmd(ctx, workspace, opts...)
 	if err != nil {
 		return err
 	}
-	return tf.runTerraformCmd(ctx, cmd)
+	return tf.runTofuCmd(ctx, cmd)
 }
 
-func (tf *Terraform) workspaceDeleteCmd(ctx context.Context, workspace string, opts ...WorkspaceDeleteCmdOption) (*exec.Cmd, error) {
+func (tf *Tofu) workspaceDeleteCmd(ctx context.Context, workspace string, opts ...WorkspaceDeleteCmdOption) (*exec.Cmd, error) {
 	c := defaultWorkspaceDeleteOptions
 
 	for _, o := range opts {
@@ -55,7 +55,7 @@ func (tf *Terraform) workspaceDeleteCmd(ctx context.Context, workspace string, o
 		case *LockOption, *LockTimeoutOption:
 			err := tf.compatible(ctx, tf0_12_0, nil)
 			if err != nil {
-				return nil, fmt.Errorf("-lock and -lock-timeout were added to workspace delete in Terraform 0.12: %w", err)
+				return nil, fmt.Errorf("-lock and -lock-timeout were added to workspace delete in Tofu 0.12: %w", err)
 			}
 		}
 
@@ -78,7 +78,7 @@ func (tf *Terraform) workspaceDeleteCmd(ctx context.Context, workspace string, o
 
 	args = append(args, workspace)
 
-	cmd := tf.buildTerraformCmd(ctx, nil, args...)
+	cmd := tf.buildTofuCmd(ctx, nil, args...)
 
 	return cmd, nil
 }

@@ -31,7 +31,7 @@ var (
 	metadataFunctionsMinVersion = version.Must(version.NewVersion("1.4.0"))
 )
 
-func runTest(t *testing.T, fixtureName string, cb func(t *testing.T, tfVersion *version.Version, tf *tfexec.Terraform)) {
+func runTest(t *testing.T, fixtureName string, cb func(t *testing.T, tfVersion *version.Version, tf *tfexec.Tofu)) {
 	t.Helper()
 
 	versions := []string{
@@ -48,14 +48,14 @@ func runTest(t *testing.T, fixtureName string, cb func(t *testing.T, tfVersion *
 	}
 
 	// If the env var TFEXEC_E2ETEST_TERRAFORM_PATH is set to the path of a
-	// valid Terraform executable, only tests appropriate to that
+	// valid Tofu executable, only tests appropriate to that
 	// executable's version will be run.
 	if localBinPath := os.Getenv("TFEXEC_E2ETEST_TERRAFORM_PATH"); localBinPath != "" {
-		// By convention, every new Terraform struct is given a clean
+		// By convention, every new Tofu struct is given a clean
 		// temp dir, even if we are only invoking tf.Version(). This
 		// prevents any possible confusion that could result from
 		// reusing an os.TempDir() (for example) that already contained
-		// Terraform files.
+		// Tofu files.
 		td, err := ioutil.TempDir("", "tf")
 		if err != nil {
 			t.Fatalf("error creating temporary test directory: %s", err)
@@ -63,7 +63,7 @@ func runTest(t *testing.T, fixtureName string, cb func(t *testing.T, tfVersion *
 		t.Cleanup(func() {
 			os.RemoveAll(td)
 		})
-		ltf, err := tfexec.NewTerraform(td, localBinPath)
+		ltf, err := tfexec.NewTofu(td, localBinPath)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -72,7 +72,7 @@ func runTest(t *testing.T, fixtureName string, cb func(t *testing.T, tfVersion *
 
 		lVersion, _, err := ltf.Version(context.Background(), false)
 		if err != nil {
-			t.Fatalf("unable to determine version of Terraform binary at %s: %s", localBinPath, err)
+			t.Fatalf("unable to determine version of Tofu binary at %s: %s", localBinPath, err)
 		}
 
 		versions = []string{lVersion.String()}
@@ -81,7 +81,7 @@ func runTest(t *testing.T, fixtureName string, cb func(t *testing.T, tfVersion *
 	runTestWithVersions(t, versions, fixtureName, cb)
 }
 
-func runTestWithVersions(t *testing.T, versions []string, fixtureName string, cb func(t *testing.T, tfVersion *version.Version, tf *tfexec.Terraform)) {
+func runTestWithVersions(t *testing.T, versions []string, fixtureName string, cb func(t *testing.T, tfVersion *version.Version, tf *tfexec.Tofu)) {
 	t.Helper()
 
 	alreadyRunVersions := map[string]bool{}
@@ -93,7 +93,7 @@ func runTestWithVersions(t *testing.T, versions []string, fixtureName string, cb
 					t.Fatal(err)
 				}
 				if v.LessThan(version.Must(version.NewVersion("1.0.2"))) {
-					t.Skipf("Terraform not available for darwin/arm64 < 1.0.2 (%s)", v)
+					t.Skipf("Tofu not available for darwin/arm64 < 1.0.2 (%s)", v)
 				}
 			}
 
@@ -119,7 +119,7 @@ func runTestWithVersions(t *testing.T, versions []string, fixtureName string, cb
 				execPath = tfcache.Version(t, tfv)
 			}
 
-			tf, err := tfexec.NewTerraform(td, execPath)
+			tf, err := tfexec.NewTofu(td, execPath)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -133,7 +133,7 @@ func runTestWithVersions(t *testing.T, versions []string, fixtureName string, cb
 
 			// Check that the runningVersion matches the expected
 			// test version. This ensures non-matching tests are
-			// skipped when using a local Terraform executable.
+			// skipped when using a local Tofu executable.
 			if !strings.HasPrefix(tfv, "refs/") {
 				testVersion, err := version.NewVersion(tfv)
 				if err != nil {

@@ -13,7 +13,7 @@ import (
 func TestStateMvCmd(t *testing.T) {
 	td := t.TempDir()
 
-	tf, err := NewTerraform(td, tfVersion(t, testutil.Latest_v1))
+	tf, err := NewTofu(td, tfVersion(t, testutil.Latest_v1))
 	if err != nil {
 		t.Fatal(err)
 	}

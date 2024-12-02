@@ -15,13 +15,13 @@ import (
 
 func TestUpgrade012(t *testing.T) {
 	if runtime.GOOS == "darwin" && runtime.GOARCH == "arm64" {
-		t.Skip("Terraform for darwin/arm64 is not available until v1")
+		t.Skip("Tofu for darwin/arm64 is not available until v1")
 	}
 
 	td := t.TempDir()
 
 	t.Run("defaults", func(t *testing.T) {
-		tf, err := NewTerraform(td, tfVersion(t, testutil.Latest012))
+		tf, err := NewTofu(td, tfVersion(t, testutil.Latest012))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -42,7 +42,7 @@ func TestUpgrade012(t *testing.T) {
 	})
 
 	t.Run("override all defaults", func(t *testing.T) {
-		tf, err := NewTerraform(td, tfVersion(t, testutil.Latest012))
+		tf, err := NewTofu(td, tfVersion(t, testutil.Latest012))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -70,7 +70,7 @@ func TestUpgrade012(t *testing.T) {
 	}
 	for _, tfv := range unsupportedVersions {
 		t.Run(fmt.Sprintf("unsupported on %s", tfv), func(t *testing.T) {
-			tf, err := NewTerraform(td, tfVersion(t, tfv))
+			tf, err := NewTofu(td, tfVersion(t, tfv))
 			if err != nil {
 				t.Fatal(err)
 			}

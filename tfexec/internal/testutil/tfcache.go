@@ -52,7 +52,7 @@ func (tf *TFCache) GitRef(t *testing.T, ref string) string {
 
 	return tf.find(t, key, func(ctx context.Context) (string, error) {
 		gr := &build.GitRevision{
-			Product: product.Terraform,
+			Product: product.Tofu,
 			Ref:     ref,
 		}
 		gr.SetLogger(TestLogger())
@@ -68,7 +68,7 @@ func (tf *TFCache) Version(t *testing.T, v string) string {
 
 	return tf.find(t, key, func(ctx context.Context) (string, error) {
 		ev := &releases.ExactVersion{
-			Product: product.Terraform,
+			Product: product.Tofu,
 			Version: version.Must(version.NewVersion(v)),
 		}
 		ev.SetLogger(TestLogger())

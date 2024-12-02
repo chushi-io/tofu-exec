@@ -19,10 +19,10 @@ var (
 )
 
 func TestTest(t *testing.T) {
-	runTest(t, "test_command_passing", func(t *testing.T, tfv *version.Version, tf *tfexec.Terraform) {
+	runTest(t, "test_command_passing", func(t *testing.T, tfv *version.Version, tf *tfexec.Tofu) {
 		// Use Core() to enable pre-release support
 		if tfv.Core().LessThan(testMinVersion) {
-			t.Skip("test command is not available in this Terraform version")
+			t.Skip("test command is not available in this Tofu version")
 		}
 
 		err := tf.Test(context.Background(), nil)
@@ -34,10 +34,10 @@ func TestTest(t *testing.T) {
 }
 
 func TestTestError(t *testing.T) {
-	runTest(t, "test_command_failing", func(t *testing.T, tfv *version.Version, tf *tfexec.Terraform) {
+	runTest(t, "test_command_failing", func(t *testing.T, tfv *version.Version, tf *tfexec.Tofu) {
 		// Use Core() to enable pre-release support
 		if tfv.Core().LessThan(testMinVersion) {
-			t.Skip("test command is not available in this Terraform version")
+			t.Skip("test command is not available in this Tofu version")
 		}
 
 		err := tf.Test(context.Background(), io.Discard)

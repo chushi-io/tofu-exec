@@ -37,22 +37,22 @@ func TestParsePlaintextVersionOutput(t *testing.T) {
 		// 0.13 tests
 		{
 			mustVersion(t, "0.13.0-dev"), nil, `
-Terraform v0.13.0-dev`,
+Tofu v0.13.0-dev`,
 		},
 		{
 			mustVersion(t, "0.13.0-dev"), map[string]*version.Version{
 				"registry.terraform.io/hashicorp/null": mustVersion(t, "2.1.2"),
 				"registry.terraform.io/paultyng/null":  mustVersion(t, "0.1.0"),
 			}, `
-Terraform v0.13.0-dev
+Tofu v0.13.0-dev
 + provider registry.terraform.io/hashicorp/null v2.1.2
 + provider registry.terraform.io/paultyng/null v0.1.0`,
 		},
 		{
 			mustVersion(t, "0.13.0-dev"), nil, `
-Terraform v0.13.0-dev
+Tofu v0.13.0-dev
 
-Your version of Terraform is out of date! The latest version
+Your version of Tofu is out of date! The latest version
 is 0.13.1. You can update by downloading from https://www.terraform.io/downloads.html`,
 		},
 		{
@@ -60,33 +60,33 @@ is 0.13.1. You can update by downloading from https://www.terraform.io/downloads
 				"registry.terraform.io/hashicorp/null": mustVersion(t, "2.1.2"),
 				"registry.terraform.io/paultyng/null":  mustVersion(t, "0.1.0"),
 			}, `
-Terraform v0.13.0-dev
+Tofu v0.13.0-dev
 + provider registry.terraform.io/hashicorp/null v2.1.2
 + provider registry.terraform.io/paultyng/null v0.1.0
 
-Your version of Terraform is out of date! The latest version
+Your version of Tofu is out of date! The latest version
 is 0.13.1. You can update by downloading from https://www.terraform.io/downloads.html`,
 		},
 
 		// 0.12 tests
 		{
 			mustVersion(t, "0.12.26"), nil, `
-Terraform v0.12.26
+Tofu v0.12.26
 `,
 		},
 		{
 			mustVersion(t, "0.12.26"), map[string]*version.Version{
 				"null": mustVersion(t, "2.1.2"),
 			}, `
-Terraform v0.12.26
+Tofu v0.12.26
 + provider.null v2.1.2
 `,
 		},
 		{
 			mustVersion(t, "0.12.18"), nil, `
-Terraform v0.12.18
+Tofu v0.12.18
 
-Your version of Terraform is out of date! The latest version
+Your version of Tofu is out of date! The latest version
 is 0.12.26. You can update by downloading from https://www.terraform.io/downloads.html
 `,
 		},
@@ -94,10 +94,10 @@ is 0.12.26. You can update by downloading from https://www.terraform.io/download
 			mustVersion(t, "0.12.18"), map[string]*version.Version{
 				"null": mustVersion(t, "2.1.2"),
 			}, `
-Terraform v0.12.18
+Tofu v0.12.18
 + provider.null v2.1.2
 
-Your version of Terraform is out of date! The latest version
+Your version of Tofu is out of date! The latest version
 is 0.12.26. You can update by downloading from https://www.terraform.io/downloads.html
 `,
 		},
@@ -213,11 +213,11 @@ func TestVersionInRange(t *testing.T) {
 
 func TestCompatible(t *testing.T) {
 	if runtime.GOOS == "darwin" && runtime.GOARCH == "arm64" {
-		t.Skip("Terraform for darwin/arm64 is not available until v1")
+		t.Skip("Tofu for darwin/arm64 is not available until v1")
 	}
 
 	ev := &releases.ExactVersion{
-		Product: product.Terraform,
+		Product: product.Tofu,
 		Version: version.Must(version.NewVersion("0.12.26")),
 	}
 	ev.SetLogger(testutil.TestLogger())
@@ -231,7 +231,7 @@ func TestCompatible(t *testing.T) {
 	}
 
 	ev = &releases.ExactVersion{
-		Product: product.Terraform,
+		Product: product.Tofu,
 		Version: version.Must(version.NewVersion("0.13.0-beta3")),
 	}
 	ev.SetLogger(testutil.TestLogger())
@@ -261,7 +261,7 @@ func TestCompatible(t *testing.T) {
 		{true, "", "0.14.0", tf013beta3},
 	} {
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
-			tf, err := NewTerraform(filepath.Dir(c.binPath), c.binPath)
+			tf, err := NewTofu(filepath.Dir(c.binPath), c.binPath)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -316,7 +316,7 @@ func TestExperimentsEnabled(t *testing.T) {
 		name, testCase := name, testCase
 		t.Run(name, func(t *testing.T) {
 			ev := &releases.ExactVersion{
-				Product: product.Terraform,
+				Product: product.Tofu,
 				Version: testCase.tfVersion,
 			}
 			ev.SetLogger(testutil.TestLogger())
@@ -329,7 +329,7 @@ func TestExperimentsEnabled(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			tf, err := NewTerraform(filepath.Dir(tfBinPath), tfBinPath)
+			tf, err := NewTofu(filepath.Dir(tfBinPath), tfBinPath)
 			if err != nil {
 				t.Fatal(err)
 			}

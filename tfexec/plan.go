@@ -110,12 +110,12 @@ func (opt *AllowDeferralOption) configurePlan(conf *planConfig) {
 //
 // The returned error is nil if `terraform plan` has been executed and exits
 // with either 0 or 2.
-func (tf *Terraform) Plan(ctx context.Context, opts ...PlanOption) (bool, error) {
+func (tf *Tofu) Plan(ctx context.Context, opts ...PlanOption) (bool, error) {
 	cmd, err := tf.planCmd(ctx, opts...)
 	if err != nil {
 		return false, err
 	}
-	err = tf.runTerraformCmd(ctx, cmd)
+	err = tf.runTofuCmd(ctx, cmd)
 	if err != nil && cmd.ProcessState.ExitCode() == 2 {
 		return true, nil
 	}
@@ -137,7 +137,7 @@ func (tf *Terraform) Plan(ctx context.Context, opts ...PlanOption) (bool, error)
 //
 // PlanJSON is likely to be removed in a future major version in favour of
 // Plan returning JSON by default.
-func (tf *Terraform) PlanJSON(ctx context.Context, w io.Writer, opts ...PlanOption) (bool, error) {
+func (tf *Tofu) PlanJSON(ctx context.Context, w io.Writer, opts ...PlanOption) (bool, error) {
 	err := tf.compatible(ctx, tf0_15_3, nil)
 	if err != nil {
 		return false, fmt.Errorf("terraform plan -json was added in 0.15.3: %w", err)
@@ -150,7 +150,7 @@ func (tf *Terraform) PlanJSON(ctx context.Context, w io.Writer, opts ...PlanOpti
 		return false, err
 	}
 
-	err = tf.runTerraformCmd(ctx, cmd)
+	err = tf.runTofuCmd(ctx, cmd)
 	if err != nil && cmd.ProcessState.ExitCode() == 2 {
 		return true, nil
 	}
@@ -158,7 +158,7 @@ func (tf *Terraform) PlanJSON(ctx context.Context, w io.Writer, opts ...PlanOpti
 	return false, err
 }
 
-func (tf *Terraform) planCmd(ctx context.Context, opts ...PlanOption) (*exec.Cmd, error) {
+func (tf *Tofu) planCmd(ctx context.Context, opts ...PlanOption) (*exec.Cmd, error) {
 	c := defaultPlanOptions
 
 	for _, o := range opts {
@@ -173,7 +173,7 @@ func (tf *Terraform) planCmd(ctx context.Context, opts ...PlanOption) (*exec.Cmd
 	return tf.buildPlanCmd(ctx, c, args)
 }
 
-func (tf *Terraform) planJSONCmd(ctx context.Context, opts ...PlanOption) (*exec.Cmd, error) {
+func (tf *Tofu) planJSONCmd(ctx context.Context, opts ...PlanOption) (*exec.Cmd, error) {
 	c := defaultPlanOptions
 
 	for _, o := range opts {
@@ -190,7 +190,7 @@ func (tf *Terraform) planJSONCmd(ctx context.Context, opts ...PlanOption) (*exec
 	return tf.buildPlanCmd(ctx, c, args)
 }
 
-func (tf *Terraform) buildPlanArgs(ctx context.Context, c planConfig) ([]string, error) {
+func (tf *Tofu) buildPlanArgs(ctx context.Context, c planConfig) ([]string, error) {
 	args := []string{"plan", "-no-color", "-input=false", "-detailed-exitcode"}
 
 	// string opts: only pass if set
@@ -215,7 +215,7 @@ func (tf *Terraform) buildPlanArgs(ctx context.Context, c planConfig) ([]string,
 	if c.refreshOnly {
 		err := tf.compatible(ctx, tf0_15_4, nil)
 		if err != nil {
-			return nil, fmt.Errorf("refresh-only option was introduced in Terraform 0.15.4: %w", err)
+			return nil, fmt.Errorf("refresh-only option was introduced in Tofu 0.15.4: %w", err)
 		}
 		if !c.refresh {
 			return nil, fmt.Errorf("you cannot use refresh=false in refresh-only planning mode")
@@ -227,7 +227,7 @@ func (tf *Terraform) buildPlanArgs(ctx context.Context, c planConfig) ([]string,
 	if c.replaceAddrs != nil {
 		err := tf.compatible(ctx, tf0_15_2, nil)
 		if err != nil {
-			return nil, fmt.Errorf("replace option was introduced in Terraform 0.15.2: %w", err)
+			return nil, fmt.Errorf("replace option was introduced in Tofu 0.15.2: %w", err)
 		}
 		for _, addr := range c.replaceAddrs {
 			args = append(args, "-replace="+addr)
@@ -252,13 +252,13 @@ func (tf *Terraform) buildPlanArgs(ctx context.Context, c planConfig) ([]string,
 		// Ensure the version is later than 1.9.0
 		err := tf.compatible(ctx, tf1_9_0, nil)
 		if err != nil {
-			return nil, fmt.Errorf("-allow-deferral is an experimental option introduced in Terraform 1.9.0: %w", err)
+			return nil, fmt.Errorf("-allow-deferral is an experimental option introduced in Tofu 1.9.0: %w", err)
 		}
 
 		// Ensure the version has experiments enabled (alpha or dev builds)
 		err = tf.experimentsEnabled(ctx)
 		if err != nil {
-			return nil, fmt.Errorf("-allow-deferral is only available in experimental Terraform builds: %w", err)
+			return nil, fmt.Errorf("-allow-deferral is only available in experimental Tofu builds: %w", err)
 		}
 
 		args = append(args, "-allow-deferral")
@@ -267,7 +267,7 @@ func (tf *Terraform) buildPlanArgs(ctx context.Context, c planConfig) ([]string,
 	return args, nil
 }
 
-func (tf *Terraform) buildPlanCmd(ctx context.Context, c planConfig, args []string) (*exec.Cmd, error) {
+func (tf *Tofu) buildPlanCmd(ctx context.Context, c planConfig, args []string) (*exec.Cmd, error) {
 	// optional positional argument
 	if c.dir != "" {
 		args = append(args, c.dir)
@@ -282,5 +282,5 @@ func (tf *Terraform) buildPlanCmd(ctx context.Context, c planConfig, args []stri
 		mergeEnv[reattachEnvVar] = reattachStr
 	}
 
-	return tf.buildTerraformCmd(ctx, mergeEnv, args...), nil
+	return tf.buildTofuCmd(ctx, mergeEnv, args...), nil
 }

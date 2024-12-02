@@ -1,7 +1,7 @@
 # 0.21.0 (May 17, 2024)
 
 ENHANCEMENTS:
-- tfexec: Add `-allow-deferral` to `(Terraform).Apply()` and `(Terraform).Plan()` methods ([#447](https://github.com/chushi-io/tofu-exec/pull/447))
+- tfexec: Add `-allow-deferral` to `(Tofu).Apply()` and `(Tofu).Plan()` methods ([#447](https://github.com/chushi-io/tofu-exec/pull/447))
 
 # 0.20.0 (December 20, 2023)
 
@@ -23,13 +23,13 @@ BUG FIXES:
 
 BUG FIXES:
 
- - Fix bug in which errors returned from commands such as `(Terraform).Apply()` were missing stderr output from Terraform. ([#372](https://github.com/chushi-io/tofu-exec/issues/372))
+ - Fix bug in which errors returned from commands such as `(Tofu).Apply()` were missing stderr output from Tofu. ([#372](https://github.com/chushi-io/tofu-exec/issues/372))
 
 # 0.18.0 (February 20, 2023)
 
 BREAKING CHANGES:
 
- - The following error types have been removed. These errors were based on regex parsing of Terraform CLI's human-readable output into custom error cases. ([#352](https://github.com/chushi-io/tofu-exec/issues/352))
+ - The following error types have been removed. These errors were based on regex parsing of Tofu CLI's human-readable output into custom error cases. ([#352](https://github.com/chushi-io/tofu-exec/issues/352))
    - `ErrConfigInvalid`
    - `ErrLockIdInvalid`
    - `ErrMissingVar`
@@ -43,8 +43,8 @@ BREAKING CHANGES:
 
 ENHANCEMENTS:
 
-- tfexec: Add `(Terraform).ApplyJSON()`, `(Terraform).DestroyJSON()`, `(Terraform).PlanJSON()` and `(Terraform).RefreshJSON()` methods ([#354](https://github.com/chushi-io/tofu-exec/pull/354))
-- tfexec: Add `(Terraform).MetadataFunctions()` method ([#358](https://github.com/chushi-io/tofu-exec/issues/358))
+- tfexec: Add `(Tofu).ApplyJSON()`, `(Tofu).DestroyJSON()`, `(Tofu).PlanJSON()` and `(Tofu).RefreshJSON()` methods ([#354](https://github.com/chushi-io/tofu-exec/pull/354))
+- tfexec: Add `(Tofu).MetadataFunctions()` method ([#358](https://github.com/chushi-io/tofu-exec/issues/358))
 
 # 0.17.3 (August 31, 2022)
 
@@ -59,7 +59,7 @@ BUG FIXES:
 
 ENHANCEMENTS:
 
- - tfexec: Add `(Terraform).SetLogCore()` and `(Terraform).SetLogProvider()` methods ([#324](https://github.com/chushi-io/tofu-exec/pull/324))
+ - tfexec: Add `(Tofu).SetLogCore()` and `(Tofu).SetLogProvider()` methods ([#324](https://github.com/chushi-io/tofu-exec/pull/324))
 
 INTERNAL:
 
@@ -75,9 +75,9 @@ BUG FIXES:
 
 FEATURES:
 
- - Add `SetLog()` method for `Terraform` ([#291](https://github.com/chushi-io/tofu-exec/pull/291))
+ - Add `SetLog()` method for `Tofu` ([#291](https://github.com/chushi-io/tofu-exec/pull/291))
  - Add support for `state pull` and `state push` ([#215](https://github.com/chushi-io/tofu-exec/pull/215))
- - Add support for running e2e tests against a local Terraform executable with `TFEXEC_E2ETEST_TERRAFORM_PATH` ([#305](https://github.com/chushi-io/tofu-exec/pull/305))
+ - Add support for running e2e tests against a local Tofu executable with `TFEXEC_E2ETEST_TERRAFORM_PATH` ([#305](https://github.com/chushi-io/tofu-exec/pull/305))
 
 BUG FIXES:
 
@@ -110,7 +110,7 @@ FEATURES:
  - Add support for `graph` command ([#257](https://github.com/chushi-io/tofu-exec/issues/257))
  - Add support for `taint` command ([#251](https://github.com/chushi-io/tofu-exec/issues/251))
  - Add support for `untaint` command ([#251](https://github.com/chushi-io/tofu-exec/issues/251))
- - Add `ErrStatePlanRead`, returned when Terraform cannot read a given state or plan file ([#273](https://github.com/chushi-io/tofu-exec/issues/273))
+ - Add `ErrStatePlanRead`, returned when Tofu cannot read a given state or plan file ([#273](https://github.com/chushi-io/tofu-exec/issues/273))
 
 # 0.15.0 (October 05, 2021)
 
@@ -132,21 +132,21 @@ INTERNAL:
 # 0.14.0 (June 24, 2021)
 
 FEATURES:
- - Add `ProtocolVersion` to `ReattachConfig` struct, enabling provider protocol v6 support in reattach mode, provided that Terraform and the provider plugin are both using go-plugin v1.4.1 or later. This change is backwards-compatible, as zero values for this field are interpreted as protocol v5. ([#182](https://github.com/chushi-io/tofu-exec/issues/182))
+ - Add `ProtocolVersion` to `ReattachConfig` struct, enabling provider protocol v6 support in reattach mode, provided that Tofu and the provider plugin are both using go-plugin v1.4.1 or later. This change is backwards-compatible, as zero values for this field are interpreted as protocol v5. ([#182](https://github.com/chushi-io/tofu-exec/issues/182))
  - Introduce `tfexec.Get()` for downloading modules ([#176](https://github.com/chushi-io/tofu-exec/issues/176))
  - Introduce `tfexec.Upgrade013()` ([#178](https://github.com/chushi-io/tofu-exec/issues/178))
 
 INTERNAL:
 
- - Update `terraform-json` to account for changes in state & plan JSON output in Terraform v1.0.1+ ([#194](https://github.com/chushi-io/tofu-exec/issues/194))
- - Improve error message for incompatible Terraform version ([#191](https://github.com/chushi-io/tofu-exec/issues/191))
+ - Update `terraform-json` to account for changes in state & plan JSON output in Tofu v1.0.1+ ([#194](https://github.com/chushi-io/tofu-exec/issues/194))
+ - Improve error message for incompatible Tofu version ([#191](https://github.com/chushi-io/tofu-exec/issues/191))
 
 # 0.13.3 (April 23, 2021)
 
 SECURITY:
- - `tfinstall`: The HashiCorp PGP signing key has been rotated ([HCSEC-2021-12](https://discuss.hashicorp.com/t/hcsec-2021-12-codecov-security-event-and-hashicorp-gpg-key-exposure/23512)). This key is used to verify downloaded versions of Terraform. We recommend all users of tofu-exec upgrade to v0.13.3 for this security fix. ([#166](https://github.com/chushi-io/tofu-exec/issues/166))
+ - `tfinstall`: The HashiCorp PGP signing key has been rotated ([HCSEC-2021-12](https://discuss.hashicorp.com/t/hcsec-2021-12-codecov-security-event-and-hashicorp-gpg-key-exposure/23512)). This key is used to verify downloaded versions of Tofu. We recommend all users of tofu-exec upgrade to v0.13.3 for this security fix. ([#166](https://github.com/chushi-io/tofu-exec/issues/166))
 
-N.B. Versions of tofu-exec prior to v0.13.3 will continue to verify older versions of Terraform (up to and including v0.15.0) for a limited period. **Installation of Terraform using older versions of tofu-exec will stop working soon, and we recommend upgrading as soon as possible to avoid any interruption.**
+N.B. Versions of tofu-exec prior to v0.13.3 will continue to verify older versions of Tofu (up to and including v0.15.0) for a limited period. **Installation of Tofu using older versions of tofu-exec will stop working soon, and we recommend upgrading as soon as possible to avoid any interruption.**
 
 # 0.13.2 (April 06, 2021)
 
@@ -157,17 +157,17 @@ BUG FIXES:
 # 0.13.1 (March 29, 2021)
 
 BUG FIXES:
- - Bump version of terraform-json library to handle latest Terraform 0.15 output format ([#143](https://github.com/chushi-io/tofu-exec/issues/143))
+ - Bump version of terraform-json library to handle latest Tofu 0.15 output format ([#143](https://github.com/chushi-io/tofu-exec/issues/143))
 
 NOTES:
  - This release no longer supports Go 1.12 (1.13+ is required)
 
 # 0.13.0 (February 05, 2021)
 
-Please note that this is the first release of tofu-exec compatible with Terraform 0.15. Running Terraform 0.15 commands with previous versions of tofu-exec may produce unexpected results.
+Please note that this is the first release of tofu-exec compatible with Tofu 0.15. Running Tofu 0.15 commands with previous versions of tofu-exec may produce unexpected results.
 
 FEATURES:
- - Compatibility checks for CLI flags removed in Terraform 0.15 ([#120](https://github.com/chushi-io/tofu-exec/issues/120))
+ - Compatibility checks for CLI flags removed in Tofu 0.15 ([#120](https://github.com/chushi-io/tofu-exec/issues/120))
  - Introduce `StateRm` method ([#122](https://github.com/chushi-io/tofu-exec/issues/122))
 
 # 0.12.0 (December 18, 2020)
@@ -190,7 +190,7 @@ BUG FIXES:
 # 0.11.0 (September 23, 2020)
 
 FEATURES:
- - Added Terraform fmt support with the ability to format and write files/folders, check if files/folders need formatting, and format strings directly ([#82](https://github.com/chushi-io/tofu-exec/issues/82))
+ - Added Tofu fmt support with the ability to format and write files/folders, check if files/folders need formatting, and format strings directly ([#82](https://github.com/chushi-io/tofu-exec/issues/82))
  - Added support for refs in the tfinstall CLI ([#80](https://github.com/chushi-io/tofu-exec/issues/80))
 
 N.B. tfinstall binaries for all supported platforms are now available via GitHub Releases.
@@ -206,22 +206,22 @@ FEATURES:
 
 BREAKING CHANGES:
  - `context.Context` added to `tfinstall.Find` to allow for cancellation, timeouts, etc ([#51](https://github.com/chushi-io/tofu-exec/issues/51))
- - You can no longer use `TF_WORKSPACE` for workspace management, you must use `Terraform.WorkspaceSelect` ([#75](https://github.com/chushi-io/tofu-exec/issues/75))
+ - You can no longer use `TF_WORKSPACE` for workspace management, you must use `Tofu.WorkspaceSelect` ([#75](https://github.com/chushi-io/tofu-exec/issues/75))
 
 FEATURES:
- - Add `ErrWorkspaceExists` for when workspaces with the same name already exist when calling `Terraform.WorkspaceNew` ([#67](https://github.com/chushi-io/tofu-exec/issues/67))
- - Added `tfinstall.GitRef` to support installation of Terraform from a git ref instead of by released version ([#51](https://github.com/chushi-io/tofu-exec/issues/51))
+ - Add `ErrWorkspaceExists` for when workspaces with the same name already exist when calling `Tofu.WorkspaceNew` ([#67](https://github.com/chushi-io/tofu-exec/issues/67))
+ - Added `tfinstall.GitRef` to support installation of Tofu from a git ref instead of by released version ([#51](https://github.com/chushi-io/tofu-exec/issues/51))
  - Created the **tfinstall** CLI utility (this is mostly for use in things like CI automation) ([#29](https://github.com/chushi-io/tofu-exec/issues/29))
  - Added `ReattachOption` for plugin reattach functionality ([#78](https://github.com/chushi-io/tofu-exec/issues/78))
 
 # 0.8.0 (August 29, 2020)
 
 BREAKING CHANGES:
- - Add `-detailed-exit-code` to `Terraform.Plan` calls, `Terraform.Plan` now also returns a bool indicating if any diff is present ([#55](https://github.com/chushi-io/tofu-exec/issues/55))
+ - Add `-detailed-exit-code` to `Tofu.Plan` calls, `Tofu.Plan` now also returns a bool indicating if any diff is present ([#55](https://github.com/chushi-io/tofu-exec/issues/55))
  
 FEATURES:
- - Added `Terraform.SetAppendUserAgent` for User-Agent management from consuming applications ([#46](https://github.com/chushi-io/tofu-exec/issues/46))
- - Added `Terraform.WorkspaceList`, `Terraform.WorkspaceNew`, and `Terraform.WorkspaceSelect` along with the `ErrNoWorkspace` error to indicate a workspace does not exist ([#56](https://github.com/chushi-io/tofu-exec/issues/56))
+ - Added `Tofu.SetAppendUserAgent` for User-Agent management from consuming applications ([#46](https://github.com/chushi-io/tofu-exec/issues/46))
+ - Added `Tofu.WorkspaceList`, `Tofu.WorkspaceNew`, and `Tofu.WorkspaceSelect` along with the `ErrNoWorkspace` error to indicate a workspace does not exist ([#56](https://github.com/chushi-io/tofu-exec/issues/56))
  - Added support for using multiple `VarFile` options ([#61](https://github.com/chushi-io/tofu-exec/issues/61))
  
 BUG FIXES:
@@ -230,8 +230,8 @@ BUG FIXES:
 # 0.7.0 (August 20, 2020)
 
 FEATURES:
- - Added `Terraform.Refresh` method ([#53](https://github.com/chushi-io/tofu-exec/issues/53))
- - Added `Terraform.ShowStateFile` and `Terraform.ShowPlanFile` ([#54](https://github.com/chushi-io/tofu-exec/issues/54))
+ - Added `Tofu.Refresh` method ([#53](https://github.com/chushi-io/tofu-exec/issues/53))
+ - Added `Tofu.ShowStateFile` and `Tofu.ShowPlanFile` ([#54](https://github.com/chushi-io/tofu-exec/issues/54))
  - Added support for `DIR` positional arg in init, destroy, and plan ([#52](https://github.com/chushi-io/tofu-exec/issues/52))
  - Relaxed logger interface ([#57](https://github.com/chushi-io/tofu-exec/issues/57))
  - Added error for missing required variable ([#57](https://github.com/chushi-io/tofu-exec/issues/57))
@@ -242,10 +242,10 @@ BUG FIXES:
 # 0.6.0 (August 14, 2020)
 
 FEATURES:
- - Added `Terraform.SetStdout` and `Terraform.SetStderr` to let consumers log CLI output ([#49](https://github.com/chushi-io/tofu-exec/issues/49))
+ - Added `Tofu.SetStdout` and `Tofu.SetStderr` to let consumers log CLI output ([#49](https://github.com/chushi-io/tofu-exec/issues/49))
 
 BUG FIXES:
- - Fixed miscategorization of `ErrNoInit` on Terraform 0.13 ([#48](https://github.com/chushi-io/tofu-exec/issues/48))
+ - Fixed miscategorization of `ErrNoInit` on Tofu 0.13 ([#48](https://github.com/chushi-io/tofu-exec/issues/48))
 
 # 0.5.0 (August 14, 2020)
 
@@ -258,8 +258,8 @@ BUG FIXES:
 # 0.4.0 (July 30, 2020)
 
 FEATURES:
-  - Added `Terraform.SetLogPath` method to set `TF_LOG_PATH` environment variable, and prevented manual setting of programmatically supported environment variables ([#32](https://github.com/chushi-io/tofu-exec/issues/32))
-  - Added `Terraform.Version` method to get executable version information ([#7](https://github.com/chushi-io/tofu-exec/issues/7))
+  - Added `Tofu.SetLogPath` method to set `TF_LOG_PATH` environment variable, and prevented manual setting of programmatically supported environment variables ([#32](https://github.com/chushi-io/tofu-exec/issues/32))
+  - Added `Tofu.Version` method to get executable version information ([#7](https://github.com/chushi-io/tofu-exec/issues/7))
 
 BUG FIXES:
   - Fixed `-var` handling issue ([#34](https://github.com/chushi-io/tofu-exec/issues/34))

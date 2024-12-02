@@ -100,15 +100,15 @@ func (opt *VerifyPluginsOption) configureInit(conf *initConfig) {
 }
 
 // Init represents the terraform init subcommand.
-func (tf *Terraform) Init(ctx context.Context, opts ...InitOption) error {
+func (tf *Tofu) Init(ctx context.Context, opts ...InitOption) error {
 	cmd, err := tf.initCmd(ctx, opts...)
 	if err != nil {
 		return err
 	}
-	return tf.runTerraformCmd(ctx, cmd)
+	return tf.runTofuCmd(ctx, cmd)
 }
 
-func (tf *Terraform) initCmd(ctx context.Context, opts ...InitOption) (*exec.Cmd, error) {
+func (tf *Tofu) initCmd(ctx context.Context, opts ...InitOption) (*exec.Cmd, error) {
 	c := defaultInitOptions
 
 	for _, o := range opts {
@@ -116,7 +116,7 @@ func (tf *Terraform) initCmd(ctx context.Context, opts ...InitOption) (*exec.Cmd
 		case *LockOption, *LockTimeoutOption, *VerifyPluginsOption, *GetPluginsOption:
 			err := tf.compatible(ctx, nil, tf0_15_0)
 			if err != nil {
-				return nil, fmt.Errorf("-lock, -lock-timeout, -verify-plugins, and -get-plugins options are no longer available as of Terraform 0.15: %w", err)
+				return nil, fmt.Errorf("-lock, -lock-timeout, -verify-plugins, and -get-plugins options are no longer available as of Tofu 0.15: %w", err)
 			}
 		}
 
@@ -186,5 +186,5 @@ func (tf *Terraform) initCmd(ctx context.Context, opts ...InitOption) (*exec.Cmd
 		mergeEnv[reattachEnvVar] = reattachStr
 	}
 
-	return tf.buildTerraformCmd(ctx, mergeEnv, args...), nil
+	return tf.buildTofuCmd(ctx, mergeEnv, args...), nil
 }

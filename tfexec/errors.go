@@ -22,7 +22,7 @@ func (e *ErrNoSuitableBinary) Unwrap() error {
 	return e.err
 }
 
-// ErrVersionMismatch is returned when the detected Terraform version is not compatible with the
+// ErrVersionMismatch is returned when the detected Tofu version is not compatible with the
 // command or flags being used in this invocation.
 type ErrVersionMismatch struct {
 	MinInclusive string

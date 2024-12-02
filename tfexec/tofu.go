@@ -19,9 +19,9 @@ type printfer interface {
 	Printf(format string, v ...interface{})
 }
 
-// Terraform represents the Terraform CLI executable and working directory.
+// Tofu represents the Tofu CLI executable and working directory.
 //
-// Typically this is constructed against the root module of a Terraform configuration
+// Typically this is constructed against the root module of a Tofu configuration
 // but you can override paths used in some commands depending on the available
 // options.
 //
@@ -43,7 +43,7 @@ type printfer interface {
 //   - TF_REATTACH_PROVIDERS
 //   - TF_DISABLE_PLUGIN_TLS
 //   - TF_SKIP_PROVIDER_VERIFY
-type Terraform struct {
+type Tofu struct {
 	execPath           string
 	workingDir         string
 	appendUserAgent    string
@@ -72,25 +72,25 @@ type Terraform struct {
 	provVersions map[string]*version.Version
 }
 
-// NewTerraform returns a Terraform struct with default values for all fields.
-// If a blank execPath is supplied, NewTerraform will error.
+// NewTofu returns a Tofu struct with default values for all fields.
+// If a blank execPath is supplied, NewTofu will error.
 // Use hc-install or output from os.LookPath to get a desirable execPath.
-func NewTerraform(workingDir string, execPath string) (*Terraform, error) {
+func NewTofu(workingDir string, execPath string) (*Tofu, error) {
 	if workingDir == "" {
-		return nil, fmt.Errorf("Terraform cannot be initialised with empty workdir")
+		return nil, fmt.Errorf("Tofu cannot be initialised with empty workdir")
 	}
 
 	if _, err := os.Stat(workingDir); err != nil {
-		return nil, fmt.Errorf("error initialising Terraform with workdir %s: %s", workingDir, err)
+		return nil, fmt.Errorf("error initialising Tofu with workdir %s: %s", workingDir, err)
 	}
 
 	if execPath == "" {
-		err := fmt.Errorf("NewTerraform: please supply the path to a Terraform executable using execPath, e.g. using the github.com/hashicorp/hc-install module.")
+		err := fmt.Errorf("NewTofu: please supply the path to a Tofu executable using execPath, e.g. using the github.com/hashicorp/hc-install module.")
 		return nil, &ErrNoSuitableBinary{
 			err: err,
 		}
 	}
-	tf := Terraform{
+	tf := Tofu{
 		execPath:   execPath,
 		workingDir: workingDir,
 		env:        nil, // explicit nil means copy os.Environ
@@ -101,10 +101,10 @@ func NewTerraform(workingDir string, execPath string) (*Terraform, error) {
 }
 
 // SetEnv allows you to override environment variables, this should not be used for any well known
-// Terraform environment variables that are already covered in options. Pass nil to copy the values
+// Tofu environment variables that are already covered in options. Pass nil to copy the values
 // from os.Environ. Attempting to set environment variables that should be managed manually will
 // result in ErrManualEnvVar being returned.
-func (tf *Terraform) SetEnv(env map[string]string) error {
+func (tf *Tofu) SetEnv(env map[string]string) error {
 	prohibited := ProhibitedEnv(env)
 	if len(prohibited) > 0 {
 		// just error on the first instance
@@ -116,7 +116,7 @@ func (tf *Terraform) SetEnv(env map[string]string) error {
 }
 
 // SetLogger specifies a logger for tfexec to use.
-func (tf *Terraform) SetLogger(logger printfer) {
+func (tf *Tofu) SetLogger(logger printfer) {
 	tf.logger = logger
 }
 
@@ -124,7 +124,7 @@ func (tf *Terraform) SetLogger(logger printfer) {
 //
 // This should be used for information or logging purposes only, not control
 // flow. Any parsing necessary should be added as functionality to this package.
-func (tf *Terraform) SetStdout(w io.Writer) {
+func (tf *Tofu) SetStdout(w io.Writer) {
 	tf.stdout = w
 }
 
@@ -132,19 +132,19 @@ func (tf *Terraform) SetStdout(w io.Writer) {
 //
 // This should be used for information or logging purposes only, not control
 // flow. Any parsing necessary should be added as functionality to this package.
-func (tf *Terraform) SetStderr(w io.Writer) {
+func (tf *Tofu) SetStderr(w io.Writer) {
 	tf.stderr = w
 }
 
-// SetLog sets the TF_LOG environment variable for Terraform CLI execution.
+// SetLog sets the TF_LOG environment variable for Tofu CLI execution.
 // This must be combined with a call to SetLogPath to take effect.
 //
-// This is only compatible with Terraform CLI 0.15.0 or later as setting the
+// This is only compatible with Tofu CLI 0.15.0 or later as setting the
 // log level was unreliable in earlier versions. It will default to TRACE when
 // SetLogPath is called on versions 0.14.11 and earlier, or if SetLogCore and
 // SetLogProvider have not been called before SetLogPath on versions 0.15.0 and
 // later.
-func (tf *Terraform) SetLog(log string) error {
+func (tf *Tofu) SetLog(log string) error {
 	err := tf.compatible(context.Background(), tf0_15_0, nil)
 	if err != nil {
 		return err
@@ -153,11 +153,11 @@ func (tf *Terraform) SetLog(log string) error {
 	return nil
 }
 
-// SetLogCore sets the TF_LOG_CORE environment variable for Terraform CLI
+// SetLogCore sets the TF_LOG_CORE environment variable for Tofu CLI
 // execution. This must be combined with a call to SetLogPath to take effect.
 //
-// This is only compatible with Terraform CLI 0.15.0 or later.
-func (tf *Terraform) SetLogCore(logCore string) error {
+// This is only compatible with Tofu CLI 0.15.0 or later.
+func (tf *Tofu) SetLogCore(logCore string) error {
 	err := tf.compatible(context.Background(), tf0_15_0, nil)
 	if err != nil {
 		return err
@@ -166,9 +166,9 @@ func (tf *Terraform) SetLogCore(logCore string) error {
 	return nil
 }
 
-// SetLogPath sets the TF_LOG_PATH environment variable for Terraform CLI
+// SetLogPath sets the TF_LOG_PATH environment variable for Tofu CLI
 // execution.
-func (tf *Terraform) SetLogPath(path string) error {
+func (tf *Tofu) SetLogPath(path string) error {
 	tf.logPath = path
 	// Prevent setting the log path without enabling logging
 	if tf.log == "" && tf.logCore == "" && tf.logProvider == "" {
@@ -177,12 +177,12 @@ func (tf *Terraform) SetLogPath(path string) error {
 	return nil
 }
 
-// SetLogProvider sets the TF_LOG_PROVIDER environment variable for Terraform
+// SetLogProvider sets the TF_LOG_PROVIDER environment variable for Tofu
 // CLI execution. This must be combined with a call to SetLogPath to take
 // effect.
 //
-// This is only compatible with Terraform CLI 0.15.0 or later.
-func (tf *Terraform) SetLogProvider(logProvider string) error {
+// This is only compatible with Tofu CLI 0.15.0 or later.
+func (tf *Tofu) SetLogProvider(logProvider string) error {
 	err := tf.compatible(context.Background(), tf0_15_0, nil)
 	if err != nil {
 		return err
@@ -192,22 +192,22 @@ func (tf *Terraform) SetLogProvider(logProvider string) error {
 }
 
 // SetAppendUserAgent sets the TF_APPEND_USER_AGENT environment variable for
-// Terraform CLI execution.
-func (tf *Terraform) SetAppendUserAgent(ua string) error {
+// Tofu CLI execution.
+func (tf *Tofu) SetAppendUserAgent(ua string) error {
 	tf.appendUserAgent = ua
 	return nil
 }
 
 // SetDisablePluginTLS sets the TF_DISABLE_PLUGIN_TLS environment variable for
-// Terraform CLI execution.
-func (tf *Terraform) SetDisablePluginTLS(disabled bool) error {
+// Tofu CLI execution.
+func (tf *Tofu) SetDisablePluginTLS(disabled bool) error {
 	tf.disablePluginTLS = disabled
 	return nil
 }
 
 // SetSkipProviderVerify sets the TF_SKIP_PROVIDER_VERIFY environment variable
-// for Terraform CLI execution. This is no longer used in 0.13.0 and greater.
-func (tf *Terraform) SetSkipProviderVerify(skip bool) error {
+// for Tofu CLI execution. This is no longer used in 0.13.0 and greater.
+func (tf *Tofu) SetSkipProviderVerify(skip bool) error {
 	err := tf.compatible(context.Background(), nil, tf0_13_0)
 	if err != nil {
 		return err
@@ -216,12 +216,12 @@ func (tf *Terraform) SetSkipProviderVerify(skip bool) error {
 	return nil
 }
 
-// WorkingDir returns the working directory for Terraform.
-func (tf *Terraform) WorkingDir() string {
+// WorkingDir returns the working directory for Tofu.
+func (tf *Tofu) WorkingDir() string {
 	return tf.workingDir
 }
 
-// ExecPath returns the path to the Terraform executable.
-func (tf *Terraform) ExecPath() string {
+// ExecPath returns the path to the Tofu executable.
+func (tf *Tofu) ExecPath() string {
 	return tf.execPath
 }

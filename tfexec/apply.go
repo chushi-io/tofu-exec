@@ -111,12 +111,12 @@ func (opt *AllowDeferralOption) configureApply(conf *applyConfig) {
 }
 
 // Apply represents the terraform apply subcommand.
-func (tf *Terraform) Apply(ctx context.Context, opts ...ApplyOption) error {
+func (tf *Tofu) Apply(ctx context.Context, opts ...ApplyOption) error {
 	cmd, err := tf.applyCmd(ctx, opts...)
 	if err != nil {
 		return err
 	}
-	return tf.runTerraformCmd(ctx, cmd)
+	return tf.runTofuCmd(ctx, cmd)
 }
 
 // ApplyJSON represents the terraform apply subcommand with the `-json` flag.
@@ -124,7 +124,7 @@ func (tf *Terraform) Apply(ctx context.Context, opts ...ApplyOption) error {
 // [machine-readable](https://developer.hashicorp.com/terraform/internals/machine-readable-ui)
 // JSON being written to the supplied `io.Writer`. ApplyJSON is likely to be
 // removed in a future major version in favour of Apply returning JSON by default.
-func (tf *Terraform) ApplyJSON(ctx context.Context, w io.Writer, opts ...ApplyOption) error {
+func (tf *Tofu) ApplyJSON(ctx context.Context, w io.Writer, opts ...ApplyOption) error {
 	err := tf.compatible(ctx, tf0_15_3, nil)
 	if err != nil {
 		return fmt.Errorf("terraform apply -json was added in 0.15.3: %w", err)
@@ -137,10 +137,10 @@ func (tf *Terraform) ApplyJSON(ctx context.Context, w io.Writer, opts ...ApplyOp
 		return err
 	}
 
-	return tf.runTerraformCmd(ctx, cmd)
+	return tf.runTofuCmd(ctx, cmd)
 }
 
-func (tf *Terraform) applyCmd(ctx context.Context, opts ...ApplyOption) (*exec.Cmd, error) {
+func (tf *Tofu) applyCmd(ctx context.Context, opts ...ApplyOption) (*exec.Cmd, error) {
 	c := defaultApplyOptions
 
 	for _, o := range opts {
@@ -155,7 +155,7 @@ func (tf *Terraform) applyCmd(ctx context.Context, opts ...ApplyOption) (*exec.C
 	return tf.buildApplyCmd(ctx, c, args)
 }
 
-func (tf *Terraform) applyJSONCmd(ctx context.Context, opts ...ApplyOption) (*exec.Cmd, error) {
+func (tf *Tofu) applyJSONCmd(ctx context.Context, opts ...ApplyOption) (*exec.Cmd, error) {
 	c := defaultApplyOptions
 
 	for _, o := range opts {
@@ -172,7 +172,7 @@ func (tf *Terraform) applyJSONCmd(ctx context.Context, opts ...ApplyOption) (*ex
 	return tf.buildApplyCmd(ctx, c, args)
 }
 
-func (tf *Terraform) buildApplyArgs(ctx context.Context, c applyConfig) ([]string, error) {
+func (tf *Tofu) buildApplyArgs(ctx context.Context, c applyConfig) ([]string, error) {
 	args := []string{"apply", "-no-color", "-auto-approve", "-input=false"}
 
 	// string opts: only pass if set
@@ -200,7 +200,7 @@ func (tf *Terraform) buildApplyArgs(ctx context.Context, c applyConfig) ([]strin
 	if c.refreshOnly {
 		err := tf.compatible(ctx, tf0_15_4, nil)
 		if err != nil {
-			return nil, fmt.Errorf("refresh-only option was introduced in Terraform 0.15.4: %w", err)
+			return nil, fmt.Errorf("refresh-only option was introduced in Tofu 0.15.4: %w", err)
 		}
 		if !c.refresh {
 			return nil, fmt.Errorf("you cannot use refresh=false in refresh-only planning mode")
@@ -212,7 +212,7 @@ func (tf *Terraform) buildApplyArgs(ctx context.Context, c applyConfig) ([]strin
 	if c.replaceAddrs != nil {
 		err := tf.compatible(ctx, tf0_15_2, nil)
 		if err != nil {
-			return nil, fmt.Errorf("replace option was introduced in Terraform 0.15.2: %w", err)
+			return nil, fmt.Errorf("replace option was introduced in Tofu 0.15.2: %w", err)
 		}
 		for _, addr := range c.replaceAddrs {
 			args = append(args, "-replace="+addr)
@@ -221,7 +221,7 @@ func (tf *Terraform) buildApplyArgs(ctx context.Context, c applyConfig) ([]strin
 	if c.destroy {
 		err := tf.compatible(ctx, tf0_15_2, nil)
 		if err != nil {
-			return nil, fmt.Errorf("-destroy option was introduced in Terraform 0.15.2: %w", err)
+			return nil, fmt.Errorf("-destroy option was introduced in Tofu 0.15.2: %w", err)
 		}
 		args = append(args, "-destroy")
 	}
@@ -241,13 +241,13 @@ func (tf *Terraform) buildApplyArgs(ctx context.Context, c applyConfig) ([]strin
 		// Ensure the version is later than 1.9.0
 		err := tf.compatible(ctx, tf1_9_0, nil)
 		if err != nil {
-			return nil, fmt.Errorf("-allow-deferral is an experimental option introduced in Terraform 1.9.0: %w", err)
+			return nil, fmt.Errorf("-allow-deferral is an experimental option introduced in Tofu 1.9.0: %w", err)
 		}
 
 		// Ensure the version has experiments enabled (alpha or dev builds)
 		err = tf.experimentsEnabled(ctx)
 		if err != nil {
-			return nil, fmt.Errorf("-allow-deferral is only available in experimental Terraform builds: %w", err)
+			return nil, fmt.Errorf("-allow-deferral is only available in experimental Tofu builds: %w", err)
 		}
 
 		args = append(args, "-allow-deferral")
@@ -256,7 +256,7 @@ func (tf *Terraform) buildApplyArgs(ctx context.Context, c applyConfig) ([]strin
 	return args, nil
 }
 
-func (tf *Terraform) buildApplyCmd(ctx context.Context, c applyConfig, args []string) (*exec.Cmd, error) {
+func (tf *Tofu) buildApplyCmd(ctx context.Context, c applyConfig, args []string) (*exec.Cmd, error) {
 	// string argument: pass if set
 	if c.dirOrPlan != "" {
 		args = append(args, c.dirOrPlan)
@@ -271,5 +271,5 @@ func (tf *Terraform) buildApplyCmd(ctx context.Context, c applyConfig, args []st
 		mergeEnv[reattachEnvVar] = reattachStr
 	}
 
-	return tf.buildTerraformCmd(ctx, mergeEnv, args...), nil
+	return tf.buildTofuCmd(ctx, mergeEnv, args...), nil
 }

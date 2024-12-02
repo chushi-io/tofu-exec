@@ -34,14 +34,14 @@ func (opt *GraphTypeOption) configureGraph(conf *graphConfig) {
 	conf.graphType = opt.graphType
 }
 
-func (tf *Terraform) Graph(ctx context.Context, opts ...GraphOption) (string, error) {
+func (tf *Tofu) Graph(ctx context.Context, opts ...GraphOption) (string, error) {
 	graphCmd, err := tf.graphCmd(ctx, opts...)
 	if err != nil {
 		return "", err
 	}
 	var outBuf strings.Builder
 	graphCmd.Stdout = &outBuf
-	err = tf.runTerraformCmd(ctx, graphCmd)
+	err = tf.runTofuCmd(ctx, graphCmd)
 	if err != nil {
 		return "", err
 	}
@@ -50,7 +50,7 @@ func (tf *Terraform) Graph(ctx context.Context, opts ...GraphOption) (string, er
 
 }
 
-func (tf *Terraform) graphCmd(ctx context.Context, opts ...GraphOption) (*exec.Cmd, error) {
+func (tf *Tofu) graphCmd(ctx context.Context, opts ...GraphOption) (*exec.Cmd, error) {
 	c := defaultGraphOptions
 
 	for _, o := range opts {
@@ -60,7 +60,7 @@ func (tf *Terraform) graphCmd(ctx context.Context, opts ...GraphOption) (*exec.C
 	args := []string{"graph"}
 
 	if c.plan != "" {
-		// plan was a positional argument prior to Terraform 0.15.0. Ensure proper use by checking version.
+		// plan was a positional argument prior to Tofu 0.15.0. Ensure proper use by checking version.
 		if err := tf.compatible(ctx, tf0_15_0, nil); err == nil {
 			args = append(args, "-plan="+c.plan)
 		} else {
@@ -71,7 +71,7 @@ func (tf *Terraform) graphCmd(ctx context.Context, opts ...GraphOption) (*exec.C
 	if c.drawCycles {
 		err := tf.compatible(ctx, tf0_5_0, nil)
 		if err != nil {
-			return nil, fmt.Errorf("-draw-cycles was first introduced in Terraform 0.5.0: %w", err)
+			return nil, fmt.Errorf("-draw-cycles was first introduced in Tofu 0.5.0: %w", err)
 		}
 		args = append(args, "-draw-cycles")
 	}
@@ -79,10 +79,10 @@ func (tf *Terraform) graphCmd(ctx context.Context, opts ...GraphOption) (*exec.C
 	if c.graphType != "" {
 		err := tf.compatible(ctx, tf0_8_0, nil)
 		if err != nil {
-			return nil, fmt.Errorf("-graph-type was first introduced in Terraform 0.8.0: %w", err)
+			return nil, fmt.Errorf("-graph-type was first introduced in Tofu 0.8.0: %w", err)
 		}
 		args = append(args, "-type="+c.graphType)
 	}
 
-	return tf.buildTerraformCmd(ctx, nil, args...), nil
+	return tf.buildTofuCmd(ctx, nil, args...), nil
 }

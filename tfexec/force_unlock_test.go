@@ -14,7 +14,7 @@ import (
 func TestForceUnlockCmd(t *testing.T) {
 	td := t.TempDir()
 
-	tf, err := NewTerraform(td, tfVersion(t, testutil.Latest_v1_1))
+	tf, err := NewTofu(td, tfVersion(t, testutil.Latest_v1_1))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -41,12 +41,12 @@ func TestForceUnlockCmd(t *testing.T) {
 // until v0.15.0.
 func TestForceUnlockCmd_pre015(t *testing.T) {
 	if runtime.GOOS == "darwin" && runtime.GOARCH == "arm64" {
-		t.Skip("Terraform for darwin/arm64 is not available until v1")
+		t.Skip("Tofu for darwin/arm64 is not available until v1")
 	}
 
 	td := t.TempDir()
 
-	tf, err := NewTerraform(td, tfVersion(t, testutil.Latest014))
+	tf, err := NewTofu(td, tfVersion(t, testutil.Latest014))
 	if err != nil {
 		t.Fatal(err)
 	}
